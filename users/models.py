@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
+from django.contrib import auth
+from django.conf import settings
+from quests.models import Quest
 
 from .managers import CustomUserManager
 
@@ -30,3 +33,21 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
+class Feed(models.Model):
+    uid = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
+    title = models.CharField(max_length=300)
+    date = models.DateTimeField(auto_now_add=True)  
+    photo = models.ImageField()
+
+
+class QuestList(models.Model):
+    uid = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
+    qid = models.ForeignKey(Quest, on_delete = models.CASCADE)
+    STATE = (
+        ('TODO' , 'todo'),
+        ('DOING' , 'doing'),
+        ('DONE', 'done'),
+    )
+    state =  models.CharField(max_length=10, choices=STATE, default='TODO')

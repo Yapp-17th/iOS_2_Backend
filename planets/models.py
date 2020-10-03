@@ -1,3 +1,6 @@
 from django.db import models
 
-# Create your models here.
+class Planet(models.Model):
+    uidList = models.TextField()
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
