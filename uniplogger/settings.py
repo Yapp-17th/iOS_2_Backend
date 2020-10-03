@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'quests',
     'planets',
     'trashcans',
+
+    'drf-yasg',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
