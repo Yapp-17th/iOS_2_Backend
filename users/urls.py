@@ -13,4 +13,4 @@ urlpatterns = [
     path('user/',include(User_router.urls)),
     path('feed/',include(Feed_router.urls)),
     path('questlist/',include(Questlist_router.urls)),
-]
+] 
