@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'planets',
     'trashcans',
 
-    'drf-yasg',
+    'drf_yasg',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -64,12 +64,12 @@ SITE_ID = 1
 REST_USE_JWT = True
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-    ]
+    #'DEFAULT_PERMISSION_CLASSES': (
+    #    'rest_framework.permissions.IsAuthenticated',
+    #),
+    #'DEFAULT_AUTHENTICATION_CLASSES': [
+    #    'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    #]
 }
 
 JWT_AUTH = {
@@ -121,11 +121,14 @@ WSGI_APPLICATION = 'uniplogger.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME' : secrets["DATABASES_NAME"],
+        'USER' : secrets["DATABASES_USER"],
+        'PASSWORD' : secrets["DATABASES_PASSWORD"],
+        'HOST' : secrets["DATABASES_HOST"],
+        'PORT' : secrets["DATABASES_PORT"]
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -164,3 +167,7 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+SWAGGER_SETTINGS = {
+    "DEFAULT_GENERATOR_CLASS": "rest_framework.schemas.generators.BaseSchemaGenerator",
+}
