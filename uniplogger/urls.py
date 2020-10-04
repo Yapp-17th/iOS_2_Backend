@@ -6,7 +6,6 @@ from rest_framework import routers,permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-from django.conf import settings
 from django.conf.urls.static import static
 
 
@@ -32,7 +31,6 @@ schema_view = get_schema_view(
         contact=openapi.Contact(email="contact@snippets.local"),
         license=openapi.License(name="BSD License"),
     ),
-    validators=['flex'],
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
