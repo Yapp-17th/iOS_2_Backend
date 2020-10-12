@@ -172,3 +172,14 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+         'jwt': {
+             'type': 'apiKey',
+             'description': 'jwt Token ***** format: JWT {your JWT} *****',
+             'name': 'Authorization',
+             'in': 'header'
+         }
+    },
+    'USE_SESSION_AUTH': False
+}

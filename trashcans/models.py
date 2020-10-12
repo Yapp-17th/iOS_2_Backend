@@ -12,3 +12,4 @@ class Trashcan(models.Model):
         ('NC','notConfirmed')
     )
     state = models.CharField(max_length=15, choices=STATE, default='NC')
+    delete_cnt = models.IntegerField(default=0)     # 삭제 요청 횟수

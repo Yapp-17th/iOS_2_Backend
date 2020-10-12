@@ -18,10 +18,13 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     registeredDate = models.DateTimeField(auto_now_add=True)
+    lastlogined = models.DateTimeField(auto_now=True)
     nickname = models.CharField(max_length=10)
 
     level = models.IntegerField(default=1)
     rank = models.FloatField(default=0.0)
+
+    report_user_cnt = models.IntegerField(default=0)     # 유저의 신고당한 횟수
 
     # planet 아직
     STATE = (
@@ -40,14 +43,16 @@ class Feed(models.Model):
     title = models.CharField(max_length=300)
     date = models.DateTimeField(auto_now_add=True)  
     photo = models.ImageField()
+    report_feed_cnt = models.IntegerField(default=0)     # 게시물의 신고당한 횟수
 
 
 class QuestList(models.Model):
     uid = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     qid = models.ForeignKey(Quest, on_delete = models.CASCADE)
     STATE = (
-        ('TODO' , 'todo'),
-        ('DOING' , 'doing'),
+        ('TODO', 'todo'),
+        ('DOING', 'doing'),
         ('DONE', 'done'),
+        ('ABANDON', 'abandon')  # 포기 Or 스킵 상태
     )
-    state =  models.CharField(max_length=10, choices=STATE, default='TODO')
+    state = models.CharField(max_length=10, choices=STATE, default='TODO')
