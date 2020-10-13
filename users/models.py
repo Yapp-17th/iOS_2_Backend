@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import auth
 from django.conf import settings
 from quests.models import Quest
+from planets.models import Planet
 
 from .managers import CustomUserManager
 
@@ -25,8 +26,8 @@ class CustomUser(AbstractUser):
     rank = models.FloatField(default=0.0)
 
     report_user_cnt = models.IntegerField(default=0)     # 유저의 신고당한 횟수
+    planet = models.ForeignKey(Planet, on_delete=models.CASCADE, null=True)
 
-    # planet 아직
     STATE = (
         ('N', 'Normal'),
         ('D', 'Dormant'),
