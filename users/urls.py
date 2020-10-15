@@ -7,10 +7,11 @@ User_router.register('', views.UserViewSet)
 Feed_router = routers.DefaultRouter()
 Feed_router.register('', views.FeedViewSet)
 Questlist_router = routers.DefaultRouter()
-Questlist_router.register('', views.QuestListViewSet)
+Questlist_router.register('', views.QuestListViewSet) 
 
 urlpatterns = [
-    path('', include(User_router.urls)),
+    path('user/', include(User_router.urls)),
     path('feed/', include(Feed_router.urls)),
     path('questlist/', include(Questlist_router.urls)),
+    path('rank_update/',views.rank_update)
 ] 

@@ -6,3 +6,5 @@ from rest_framework import viewsets
 class PlanetViewSet(viewsets.ModelViewSet):
     queryset = Planet.objects.all()
     serializer_class = PlanetSerializer
+
+    
