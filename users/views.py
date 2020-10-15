@@ -11,6 +11,12 @@ class UserViewSet(viewsets.ModelViewSet, mixins.UpdateModelMixin):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     
+    def update(self, request, *args, **kwargs): 
+        nickname = request.data.get('nickname')
+        user_info  = self.get_object()
+        user_info.nickname = nickname
+        self.perform_update(user_info)
+        return Response(status=status.HTTP_201_CREATED)
 
 class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
