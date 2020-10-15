@@ -6,10 +6,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['id', 'email', 'nickname', 'level', 'rank', 'state']
     
-    def nickname_insert(self,user_info,nickname):
-        user_info.nickname = nickname
-        user_info.save()
-
     def rank_save(self,user_info):
         rank_list = []
         #feed_count 갯수 기준으로 역순정렬
@@ -24,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
             rank_list[user_idx][0] = rank
             user_idx+=1
         rank_list = sorted(rank_list, key = lambda x : x[1])
-        #
+        
         user_idx = 0
         for user in user_info:
             user.rank = rank_list[user_idx][0]   
