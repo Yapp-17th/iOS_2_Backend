@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
             feed_count = len(Feed.objects.filter(uid=uid))
             rank_list.append([feed_count,uid])
         rank_list = sorted(rank_list, key = lambda x : -x[0])
-        #feed_count를 rank값으로 변경 후 uid기준으로 정렬 -
+        #feed_count를 rank값으로 변경 후 uid기준으로 정렬 
         user_idx = 0
         for rank in range(1,len(rank_list)+1):
             rank_list[user_idx][0] = rank
