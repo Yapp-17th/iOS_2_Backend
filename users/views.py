@@ -28,7 +28,15 @@ class UserViewSet(viewsets.ModelViewSet):
         self.perform_update(user_info)
         return Response(status=status.HTTP_201_CREATED)
     
-    
+    #3일 미접속 유저 user state 변경 
+    @action(detail=True, methods=['get'])
+    def change_userstate(self,request, pk, *args, **kwargs):
+        user_info = self.get_object()
+        if datetime.datetime.now() == user_info.lastlogined + datetime.timedelta(days=3):
+            user_info.state = "D"
+            serializer = self.get_serializer(user_info)
+            return Response(serializer.data)
+
 class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
