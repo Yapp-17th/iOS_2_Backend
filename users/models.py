@@ -26,7 +26,7 @@ class CustomUser(AbstractUser):
     rank = models.FloatField(default=0.0)
 
     report_user_cnt = models.IntegerField(default=0)     # 유저의 신고당한 횟수
-    planet = models.ForeignKey(Planet, on_delete=models.CASCADE, null=True)
+    planet = models.ForeignKey(Planet, on_delete=models.SET_NULL, null=True)
 
     STATE = (
         ('N', 'Normal'),

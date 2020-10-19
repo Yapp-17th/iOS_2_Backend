@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
 
     'users',
     'accounts',

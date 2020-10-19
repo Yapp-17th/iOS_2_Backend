@@ -11,6 +11,7 @@ class Planet(models.Model):
     # uidList = models.TextField()
     start_date = models.DateField(default=datetime.now)
     end_date = models.DateField(default=cal_end_date)
+    user_cnt = models.IntegerField(default=0)
 
     class Meta:
         ordering = ['id']
