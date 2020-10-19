@@ -35,12 +35,9 @@ class PlanetViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        # 기한 지난 행성들 모두 삭제
-        old_planets = Planet.objects.exclude(start_date=datetime.today())
-        if old_planets:
-            old_planets.delete()
-
         user = User.objects.get(id=self.request.user.id)
+
+
         cur_planet = Planet.objects.last()       # 가장 마지막에 생성한 행성 가져옴
         print("# last_planet : ", cur_planet)
         if cur_planet and cur_planet.customuser_set.count() < 10:

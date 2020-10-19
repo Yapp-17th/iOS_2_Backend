@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'trashcans',
 
     'drf_yasg',
+    'django_crontab',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -183,3 +184,11 @@ SWAGGER_SETTINGS = {
     },
     'USE_SESSION_AUTH': False
 }
+
+CRONJOBS = [
+    # '분 시 일 월 요일', 아래는 테스트용(매 5분마다 실행)
+    ('*/5 * * * *', 'planets.cron.crontab_job'),
+    # 매주 일요일 11:59 행성 삭제 / 월요일 0:0 행성 생성
+    # ('59 23 * * 0', 'planets.cron.delete_planet'),
+    # ('0 0 * * 1', 'planets.cron.create_planet'),
+]
