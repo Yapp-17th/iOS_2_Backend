@@ -1,10 +1,11 @@
 from datetime import datetime
 
+from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.response import Response
 
 from planets.models import Planet
-from users.models import CustomUser as User
+from users.models import CustomUser as User, Feed
 from planets.serializers import PlanetSerializer
 from users.serializers import UserSerializer
 
@@ -16,11 +17,18 @@ class PlanetViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         # 현재 로그인한 유저가 속한 행성의 유저들을 보여줌
         user = User.objects.get(id=self.request.user.id)
-        my_planet = Planet.objects.filter(id=user.planet_id)
+        my_planet = Planet.objects.filter(id=user.planet_id).first()
         if not my_planet:
             raise ValueError('유저가 아직 행성에 참여하지 않았음')
-        user_in_planet = my_planet[0].customuser_set.all()
-        print("# user in planet : ", user_in_planet)
+        user_in_planet = my_planet.customuser_set.all()
+
+        # 일주일 간의 플로깅 횟수 기준으로 정렬
+        # week_feed = Feed.objects.filter(date__range=[my_planet.start_date, my_planet.end_date])
+        # for uip in user_in_planet:
+        #     feed_cnt = week_feed.filter(uid=uip.id).count()
+        # planet_ranking = user_in_planet.extra(select={'week_feed_cnt': '정렬 기준 함수'}).order_by('week_feed_cnt')
+        # print("# user in planet : ", user_in_planet)
+        # print("# user ranking in planet : ", planet_ranking)
 
         # serializer = self.get_serializer(user_in_planet, many=True)
         serializer = UserSerializer(user_in_planet, many=True)
