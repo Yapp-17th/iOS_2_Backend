@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models import Sum
 from django.utils.translation import ugettext_lazy as _
-from django.contrib import auth
-from django.conf import settings
 from quests.models import Quest
+from planets.models import Planet
 
 from .managers import CustomUserManager
 
@@ -25,8 +25,8 @@ class CustomUser(AbstractUser):
     rank = models.FloatField(default=0.0)
 
     report_user_cnt = models.IntegerField(default=0)     # 유저의 신고당한 횟수
+    planet = models.ForeignKey(Planet, related_name='players', on_delete=models.SET_NULL, null=True)
 
-    # planet 아직
     STATE = (
         ('N', 'Normal'),
         ('D', 'Dormant'),
@@ -37,11 +37,32 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
+    def get_feed_cnt(self, planet=None):
+        feeds = Feed.objects.filter(uid=self.id)
+        if planet:
+            feeds = feeds.filter(date__range=[planet.start_date, planet.end_date])
+        return feeds.count()
+
+    def get_distance(self, planet=None):
+        feeds = Feed.objects.filter(uid=self.id)
+        if planet:
+            feeds = feeds.filter(date__range=[planet.start_date, planet.end_date])
+        return feeds.aggregate(Sum('distance'))["distance__sum"]
+
+    def get_time(self, planet=None):
+        feeds = Feed.objects.filter(uid=self.id)
+        if planet:
+            feeds = feeds.filter(date__range=[planet.start_date, planet.end_date])
+        return feeds.aggregate(Sum('time'))["time__sum"]
+
 
 class Feed(models.Model):
     uid = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     title = models.CharField(max_length=300)
-    date = models.DateTimeField(auto_now_add=True)  
+    date = models.DateTimeField(auto_now_add=True)
+    distance = models.FloatField()  # "XX.XX"km단위
+    time = models.IntegerField()    # "분"단위
+
     photo = models.ImageField()
     report_feed_cnt = models.IntegerField(default=0)     # 게시물의 신고당한 횟수
 

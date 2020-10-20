@@ -184,3 +184,9 @@ pip-selfcheck.json
 
 # Secret
 secrets.json
+
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
+
+media

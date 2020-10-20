@@ -4,7 +4,7 @@ from users.models import CustomUser,Feed,QuestList
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'nickname', 'level', 'rank', 'state']
+        fields = ['id', 'email', 'nickname', 'level', 'rank', 'state', 'planet']
 
 class FeedSerializer(serializers.ModelSerializer):
     class Meta:
