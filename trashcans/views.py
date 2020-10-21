@@ -12,10 +12,24 @@ class TrashcanViewSet(viewsets.ModelViewSet):
     queryset = Trashcan.objects.all()
     serializer_class = TrashcanSerializer
 
+    # def create(self, request, *args, **kwargs):
+        # 쓰레기통 추가할 떄 더 설정을 해줘야 했었던거 같은데,,
+        # Trashcan.objects.create(latitude=request.data["latitude"], longitude=request.data["longitude"])
+
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.delete_cnt == 2:
+            self.perform_destroy(instance)
+        else:
+            instance.delete_cnt += 1
+            instance.save()
+        return Response(self.get_serializer(instance).data)
+
 
 @api_view(['GET'])
 def get_trashcan_csv(request):
-    # Trashcan.objects.all().delete()
+    Trashcan.objects.all().delete()
 
     CSV_PATH = 'static/seoul_trashcan.csv'
 
