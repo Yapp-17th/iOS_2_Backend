@@ -49,13 +49,18 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(user_info)
             return Response(serializer.data)
 
-
 class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
+    @action(detail=True, methods=['get'])
+    def report_feed(self,request, pk, *args, **kwargs):
+        feed_info = self.get_object()
+        feed_info.report_feed_cnt += 1
+        self.perform_update(feed_info)
 
-    #def perform_create(self,serializer):
-    #    serializer.save(uid = self.request.user)
+        if feed_info.report_feed_cnt >= 3: 
+            self.perform_destroy(feed_info)
+            return Response(status = status.HTTP_202_ACCEPTED)
 
 class QuestListViewSet(viewsets.ModelViewSet):
     queryset = QuestList.objects.all()
