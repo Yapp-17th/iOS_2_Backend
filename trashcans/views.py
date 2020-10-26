@@ -11,19 +11,18 @@ from rest_framework import viewsets, status
 class TrashcanViewSet(viewsets.ModelViewSet):
     queryset = Trashcan.objects.all()
     serializer_class = TrashcanSerializer
+    http_method_names = ['get', 'post', 'delete']
 
     # def create(self, request, *args, **kwargs):
         # 쓰레기통 추가할 떄 더 설정을 해줘야 했었던거 같은데,,
         # Trashcan.objects.create(latitude=request.data["latitude"], longitude=request.data["longitude"])
 
-
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        if instance.delete_cnt == 2:
+        instance.delete_cnt += 1
+        instance.save()
+        if instance.delete_cnt == 3:
             self.perform_destroy(instance)
-        else:
-            instance.delete_cnt += 1
-            instance.save()
         return Response(self.get_serializer(instance).data)
 
 
