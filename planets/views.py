@@ -37,6 +37,9 @@ class PlanetViewSet(viewsets.ModelViewSet):
             raise ValueError('이번주는 이미 행성에 참여했음')
         # 속한 유저 수가 10보다 작으면서 id 가장 작은 행성(first)
         cur_planet = Planet.objects.filter(user_cnt__lt=10).first()
+        if not cur_planet:
+            pre_planet = Planet.objects.last()
+            cur_planet = Planet(start_date=pre_planet.start_date, end_date=pre_planet.end_date)
         cur_planet.user_cnt += 1
         cur_planet.save()
         user.planet = cur_planet
