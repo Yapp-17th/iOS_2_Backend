@@ -17,8 +17,6 @@ urlpatterns = [
     path('quests/', include('quests.urls')),
     path('planets/', include('planets.urls')),
     path('trashcans/', include('trashcans.urls')),
-    path('rest-auth/', include('rest_auth.urls')),
-    path('rest-auth/registration/', include('rest_auth.registration.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # 문서화 = swagger/로 접속

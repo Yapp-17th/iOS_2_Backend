@@ -10,7 +10,10 @@ Questlist_router = routers.DefaultRouter()
 Questlist_router.register('', views.QuestListViewSet)
 
 urlpatterns = [
+    path('', include('rest_auth.urls')),    # login/, logout/, ...
+    path('registration/', include('rest_auth.registration.urls')),
+
     path('feed/', include(Feed_router.urls)),
     path('questlist/', include(Questlist_router.urls)),
     path('', include(User_router.urls)),
-] 
+]
