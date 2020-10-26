@@ -11,13 +11,18 @@ from rest_framework import viewsets, status
 class TrashcanViewSet(viewsets.ModelViewSet):
     queryset = Trashcan.objects.all()
     serializer_class = TrashcanSerializer
-    http_method_names = ['get', 'post', 'delete']
+    http_method_names = ['get', 'post', 'delete', 'head']
 
     # def create(self, request, *args, **kwargs):
         # 쓰레기통 추가할 떄 더 설정을 해줘야 했었던거 같은데,,
         # Trashcan.objects.create(latitude=request.data["latitude"], longitude=request.data["longitude"])
 
     def destroy(self, request, *args, **kwargs):
+        '''
+                지정한 쓰레기통에 대해 삭제 요청을 보내는 API
+                ---
+                삭제 요청이 오면 delete_cnt 값이 증가하며, delete_cnt 값이 3이 되면 삭제한다.
+        '''
         instance = self.get_object()
         instance.delete_cnt += 1
         instance.save()
@@ -28,6 +33,10 @@ class TrashcanViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def get_trashcan_csv(request):
+    '''
+            csv 파일의 쓰레기통 정보를 가져옴
+            ---
+    '''
     Trashcan.objects.all().delete()
 
     CSV_PATH = 'static/seoul_trashcan.csv'
