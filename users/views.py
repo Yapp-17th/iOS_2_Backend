@@ -44,7 +44,7 @@ class FeedViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def report_feed(self,request, pk, *args, **kwargs):
         feed_info = self.get_object()
-        report_user = CustomUser.objects.get(id=1)
+        report_user = CustomUser.objects.get(id=self.request.user.id)
 
         #중복방지
         if str(report_user.id) not in feed_info.report_uidList: 
