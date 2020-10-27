@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'trashcans',
 
     'drf_yasg',
+    'django_mysql',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -64,12 +65,12 @@ SITE_ID = 1
 REST_USE_JWT = True
 
 REST_FRAMEWORK = {
-    #'DEFAULT_PERMISSION_CLASSES': (
-    #    'rest_framework.permissions.IsAuthenticated',
-    #),
+    'DEFAULT_PERMISSION_CLASSES': (
+        #'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        #'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
     ]
 }
 

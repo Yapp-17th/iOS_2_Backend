@@ -7,7 +7,6 @@ from rest_framework.response import Response
 import datetime
 
 
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
@@ -37,19 +36,6 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(user_info)
             return Response(serializer.data)
 
-    #신고기능_유저
-    @action(detail=True, methods=['get'])
-    def report_user(self,request, pk, *args, **kwargs):
-        user_info = self.get_object()
-        user_info.report_user_cnt += 1
-        self.perform_update(user_info)
-
-        if user_info.report_user_cnt >= 3:
-            #self.perform_destroy(user_info)
-            user_info.state = "L"
-            serializer = self.get_serializer(user_info)
-            return Response(serializer.data)
-
 class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
@@ -58,12 +44,20 @@ class FeedViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def report_feed(self,request, pk, *args, **kwargs):
         feed_info = self.get_object()
-        feed_info.report_feed_cnt += 1
-        self.perform_update(feed_info)
+        report_user = CustomUser.objects.get(id=1)
 
-        if feed_info.report_feed_cnt >= 3: 
-            self.perform_destroy(feed_info)
-            return Response(status = status.HTTP_202_ACCEPTED)
+        #중복방지
+        if str(report_user.id) not in feed_info.report_uidList: 
+            feed_info.report_uidList.append(report_user.id)
+            self.perform_update(feed_info)
+            #3번째 신고면 삭제
+            if len(feed_info.report_uidList) >= 3: 
+                self.perform_destroy(feed_info)
+                return Response(status = status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+        
 
 class QuestListViewSet(viewsets.ModelViewSet):
     queryset = QuestList.objects.all()
@@ -77,9 +71,10 @@ def rank_update(request):
     serializer.rank_save(user_info)
     return Response(status = status.HTTP_202_ACCEPTED)
 
+#레벨 업데이트(새로고침 실행후 호출)
 @api_view(['GET'])
-def level_update(request,pk):
-    user_info = CustomUser.objects.get(id = pk)
+def level_update(request,self, *args, **kwargs):
+    user_info = CustomUser.objects.get(id = self.request.user.id)
     serializer = UserSerializer(user_info)
     serializer.level_save(user_info)
     return Response(serializer.data,status = status.HTTP_202_ACCEPTED)

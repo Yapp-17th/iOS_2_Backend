@@ -4,7 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import auth
 from django.conf import settings
 from quests.models import Quest
-
+from django.db.models import CharField, Model
+from django_mysql.models import ListCharField
 from .managers import CustomUserManager
 
 
@@ -38,12 +39,18 @@ class CustomUser(AbstractUser):
         return self.email
 
 
-class Feed(models.Model):
+class Feed(Model):
     uid = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     title = models.CharField(max_length=300)
     date = models.DateTimeField(auto_now_add=True)  
     photo = models.ImageField()
     report_feed_cnt = models.IntegerField(default=0)     # 게시물의 신고당한 횟수
+    report_uidList = ListCharField(
+        base_field=CharField(max_length=10),
+        size=6,
+        max_length=(6 * 11),
+        default = []
+    )
 
 
 class QuestList(models.Model):

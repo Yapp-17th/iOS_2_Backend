@@ -14,5 +14,5 @@ urlpatterns = [
     path('feed/', include(Feed_router.urls)),
     path('questlist/', include(Questlist_router.urls)),
     path('rank_update/',views.rank_update),
-    path('level_update/<int:pk>',views.level_update)
+    path('level_update/',views.level_update)
 ] 
