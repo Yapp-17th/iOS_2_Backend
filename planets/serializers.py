@@ -11,7 +11,7 @@ class PlanetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Planet
-        fields = ('start_date', 'end_date', 'user_cnt', 'players')
+        fields = ('id', 'start_date', 'end_date', 'user_cnt', 'players')
 
     def get_players(self, instance):
         # 정렬 기준 : "일주일간"의 플로깅 횟수->거리->시간
