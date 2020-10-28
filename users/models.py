@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
-from django.contrib import auth
-from django.conf import settings
+
+from planets.models import Planet
 from quests.models import Quest
 from django.db.models import CharField, Model
 from django_mysql.models import ListCharField
