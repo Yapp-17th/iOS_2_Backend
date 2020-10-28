@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 
     'drf_yasg',
     'django_crontab',
+    'django_mysql',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -67,10 +68,11 @@ REST_USE_JWT = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        #'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
     ]
 }
 
@@ -193,3 +195,6 @@ CRONJOBS = [
     # ('59 23 * * 0', 'planets.cron.delete_planet'),
     # ('0 0 * * 1', 'planets.cron.create_planet'),
 ]
+#rest-auth/logout 시 로그아웃 
+ACCOUNT_LOGOUT_ON_GET = True
+

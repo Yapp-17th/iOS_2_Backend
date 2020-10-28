@@ -6,6 +6,7 @@ coreschema==0.0.4
 defusedxml==0.6.0
 Django==3.1.2
 django-allauth==0.42.0
+django-mysql==3.9.0
 django-rest-auth==0.9.5
 djangorestframework==3.11.1
 djangorestframework-jwt==1.11.0

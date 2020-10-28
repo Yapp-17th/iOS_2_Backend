@@ -47,3 +47,4 @@ class PlanetViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(cur_planet)
         return Response(serializer.data)
+
