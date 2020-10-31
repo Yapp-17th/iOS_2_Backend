@@ -5,6 +5,7 @@ from .serializers import UserSerializer,FeedSerializer,QuestListSerializer
 from .models import CustomUser,Feed,QuestList
 from rest_framework.response import Response
 import datetime
+from django.db import IntegrityError
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -14,10 +15,16 @@ class UserViewSet(viewsets.ModelViewSet):
     #닉네임 받기
     def update(self, request, *args, **kwargs): 
         nickname = request.data.get('nickname') 
-        user_info  = self.get_object() 
+        user_info  = self.get_object()
         user_info.nickname = nickname 
-        self.perform_update(user_info) 
-        return Response(status=status.HTTP_201_CREATED)
+
+        try:
+            self.perform_update(user_info) 
+            return Response(status=status.HTTP_201_CREATED)
+        except IntegrityError: 
+            # 이미 존재하는 닉네임일때
+            return Response(status=status.HTTP_409_CONFLICT) 
+        
 
     #lastlogined 갱신(앱실행시 호출)
     @action(detail=True, methods=['get'])
