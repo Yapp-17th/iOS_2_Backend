@@ -1,12 +1,12 @@
 from django.db import models
 from users.models import CustomUser
-from django.conf import settings
+
 
 class Trashcan(models.Model):
     #MYSQL 에서는 Floatfield -> Double 데이터타입 생성
     latitude = models.FloatField(default=0.0)
     longitude = models.FloatField(default=0.0)
-    address = models.TextField()
+    address = models.TextField(blank=True)
     STATE = (
         ('C','confirmed'), 
         ('NC','notConfirmed')
