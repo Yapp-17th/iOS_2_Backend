@@ -194,6 +194,8 @@ CRONJOBS = [
     # 매주 일요일 11:59 행성 삭제 / 월요일 0:0 행성 생성
     # ('59 23 * * 0', 'planets.cron.delete_planet'),
     # ('0 0 * * 1', 'planets.cron.create_planet'),
+    # 매일 0시 0분 미접속자 판별 ( N-> D )
+    ('0 0 * * *', 'users.cron.check_dormant'),
 ]
 #rest-auth/logout 시 로그아웃 
 ACCOUNT_LOGOUT_ON_GET = True

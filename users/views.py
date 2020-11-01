@@ -27,12 +27,11 @@ class UserViewSet(viewsets.ModelViewSet):
         
 
     #lastlogined 갱신(앱실행시 호출)
-    @action(detail=True, methods=['get'])
-    def update_lastlogined(self, request, pk, *args, **kwargs):
-        user_info = self.get_object()
-        user_info.lastlogined = datetime.datetime.now()
-        self.perform_update(user_info)
-        return Response(status=status.HTTP_201_CREATED)
+    #@action(detail=True, methods=['get'])
+    #def update_lastlogined(self, request, pk, *args, **kwargs):
+        # 유저상태가 D일때 N으로 변환
+        # self.perform_update(user_info)
+        # return Response(status=status.HTTP_201_CREATED)
     
     #3일 미접속 유저 user state 변경, 신고유저 state 변경
     @action(detail=True, methods=['get'])
