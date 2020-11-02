@@ -21,7 +21,7 @@ class CustomUser(AbstractUser):
 
     registeredDate = models.DateTimeField(auto_now_add=True)
     lastlogined = models.DateTimeField(auto_now=True)
-    nickname = models.CharField(max_length=10)
+    nickname = models.CharField(max_length=12)
 
     level = models.IntegerField(default=1)
     rank = models.FloatField(default=0.0)
