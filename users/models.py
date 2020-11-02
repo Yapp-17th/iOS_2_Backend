@@ -38,6 +38,9 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    class Meta:
+        ordering = ('nickname',)
     
     def get_feed_cnt(self, planet=None):
         feeds = Feed.objects.filter(uid=self.id)
@@ -49,13 +52,13 @@ class CustomUser(AbstractUser):
         feeds = Feed.objects.filter(uid=self.id)
         if planet:
             feeds = feeds.filter(date__range=[planet.start_date, planet.end_date])
-        return feeds.aggregate(Sum('distance'))["distance__sum"]
+        return feeds.aggregate(Sum('distance'))["distance__sum"] or 0
 
     def get_time(self, planet=None):
         feeds = Feed.objects.filter(uid=self.id)
         if planet:
             feeds = feeds.filter(date__range=[planet.start_date, planet.end_date])
-        return feeds.aggregate(Sum('time'))["time__sum"]
+        return feeds.aggregate(Sum('time'))["time__sum"] or 0
 
 
 
