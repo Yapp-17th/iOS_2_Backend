@@ -33,10 +33,25 @@ class UserSerializer(serializers.ModelSerializer):
         user_info.save()
 
 
+# 챌린지(행성)에서만 보여줄 user 정보(planet_score) 추가한 serializer 따로 정의
+class PlayerSerializer(serializers.ModelSerializer):
+    planet_score = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'email', 'nickname', 'level', 'rank', 'state', 'planet_score']
+
+    def get_planet_score(self, instance):
+        return instance.get_feed_cnt(instance.planet) * 1000 \
+               + instance.get_distance(instance.planet) * 100 \
+               + instance.get_time(instance.planet)
+
+
 class FeedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
         fields = '__all__'
+
 
 class QuestListSerializer(serializers.ModelSerializer):
     class Meta:
