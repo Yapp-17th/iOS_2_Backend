@@ -38,6 +38,9 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    class Meta:
+        ordering = ('nickname',)
     
     def get_feed_cnt(self, planet=None):
         feeds = Feed.objects.filter(uid=self.id)
