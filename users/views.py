@@ -60,11 +60,46 @@ class FeedViewSet(viewsets.ModelViewSet):
         else:
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
-        
 
 class QuestListViewSet(viewsets.ModelViewSet):
     queryset = QuestList.objects.all()
     serializer_class = QuestListSerializer
+    http_method_names = ['get', 'head']
+
+    # url : /users/questlist/{pk}/start_quest (퀘스트 시작 todo->doing)
+    @action(detail=True, methods=['get'])
+    def start_quest(self, request, pk):
+        quest = self.get_object()
+        quest.state = 'DOING'
+        quest.save()
+        serializer = self.get_serializer(quest)
+        return Response(serializer.data)
+
+    # url : /users/questlist/{pk}/abandon_quest (퀘스트 포기 doing->abandon)
+    @action(detail=True, methods=['get'])
+    def abandon_quest(self, request, pk):
+        quest = self.get_object()
+        quest.state = 'ABANDON'
+        quest.save()
+        serializer = self.get_serializer(quest)
+        return Response(serializer.data)
+
+    # url : /users/questlist/{pk}/delete_quest (퀘스트 삭제 done->삭제)
+    @action(detail=True, methods=['get'])
+    def delete_quest(self, request, pk):
+        quest = self.get_object()
+        self.perform_destroy(quest)
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+    # url : /users/questlist/{pk}/success_quest (퀘스트 완료 doing->done)
+    @action(detail=True, methods=['get'])
+    def success_quest(self, request, pk):
+        quest = self.get_object()
+        quest.state = 'DONE'
+        quest.save()
+        serializer = self.get_serializer(quest)
+        return Response(serializer.data)
+
 
 #랭크 업데이트 (report_feed 실행후, 새로고침 실행후 호출)
 @api_view(['GET'])
@@ -86,6 +121,10 @@ def level_update(request,self, *args, **kwargs):
 # 모든 quest를 유저에 할당 (유저별 1번만 호출, questlist에 "todo"인 상태로) ----------> 어느 타이밍에 할 것인지 아직..?
 @api_view(['GET'])
 def quest_to_user(request):
+    '''
+            모든 quest를 user에게 할당 (user별 1번만 호출, default state:"todo")
+            ---
+    '''
     # QuestList.objects.all().delete()
     uid = request.user
     all_quest = Quest.objects.all()
