@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import api_view, action
+
+from quests.models import Quest
 from .serializers import UserSerializer,FeedSerializer,QuestListSerializer
 from .models import CustomUser,Feed,QuestList
 from rest_framework.response import Response
@@ -36,10 +38,11 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(user_info)
             return Response(serializer.data)
 
+
 class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
-    
+
     #신고기능_피드
     @action(detail=True, methods=['get'])
     def report_feed(self,request, pk, *args, **kwargs):
@@ -78,3 +81,14 @@ def level_update(request,self, *args, **kwargs):
     serializer = UserSerializer(user_info)
     serializer.level_save(user_info)
     return Response(serializer.data,status = status.HTTP_202_ACCEPTED)
+
+
+# 모든 quest를 유저에 할당 (유저별 1번만 호출, questlist에 "todo"인 상태로) ----------> 어느 타이밍에 할 것인지 아직..?
+@api_view(['GET'])
+def quest_to_user(request):
+    # QuestList.objects.all().delete()
+    uid = request.user
+    all_quest = Quest.objects.all()
+    for quest in all_quest:
+        QuestList.objects.create(uid=uid, qid=quest)
+    return Response(status=status.HTTP_201_CREATED)

@@ -81,7 +81,7 @@ class Feed(Model):
 
 class QuestList(models.Model):
     uid = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
-    qid = models.ForeignKey(Quest, on_delete = models.CASCADE)
+    qid = models.ForeignKey(Quest, on_delete = models.CASCADE)  # quest와 questlist는 1:N 관계
     STATE = (
         ('TODO', 'todo'),
         ('DOING', 'doing'),

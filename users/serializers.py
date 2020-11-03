@@ -39,7 +39,7 @@ class PlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'nickname', 'level', 'rank', 'state', 'planet_score']
+        fields = ['id', 'email', 'nickname', 'planet_score']
 
     def get_planet_score(self, instance):
         return instance.get_feed_cnt(instance.planet) * 1000 \
