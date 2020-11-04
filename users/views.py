@@ -3,7 +3,7 @@ from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import api_view, action
 
 from quests.models import Quest
-from .serializers import UserSerializer,FeedSerializer,QuestListSerializer
+from .serializers import UserSerializer, FeedSerializer, QuestListSerializer, QuestListDetailSerializer
 from .models import CustomUser,Feed,QuestList
 from rest_framework.response import Response
 import datetime
@@ -66,6 +66,16 @@ class QuestListViewSet(viewsets.ModelViewSet):
     serializer_class = QuestListSerializer
     http_method_names = ['get', 'head']
 
+    # 퀘스트 상세 설명 화면, 학습퀘스트일 경우 다음 2개 퀘스트, 목표달성일 경우 랜덤 2개 퀘스트 보여주기
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        # serializer = QuestListDetailSerializer(instance)
+        serializer = QuestListDetailSerializer(
+            instance,
+            context={'user_id': request.user.id}
+        )
+        return Response(serializer.data)
+
     # url : /users/questlist/{pk}/start_quest (퀘스트 시작 todo->doing)
     @action(detail=True, methods=['get'])
     def start_quest(self, request, pk):
@@ -97,6 +107,9 @@ class QuestListViewSet(viewsets.ModelViewSet):
         quest = self.get_object()
         quest.state = 'DONE'
         quest.save()
+
+        # TODO: 유저 정보 갱신 필요 !!! (퀘스트 완료했으니까 level?)
+
         serializer = self.get_serializer(quest)
         return Response(serializer.data)
 

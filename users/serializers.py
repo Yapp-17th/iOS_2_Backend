@@ -1,4 +1,7 @@
 from rest_framework import serializers
+
+from quests.models import Quest
+from quests.serializers import QuestSerializer
 from users.models import CustomUser,Feed,QuestList
 
 class UserSerializer(serializers.ModelSerializer):
@@ -56,4 +59,32 @@ class FeedSerializer(serializers.ModelSerializer):
 class QuestListSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestList
-        fields= '__all__'
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['qid'] = QuestSerializer(instance.qid).data
+        return response
+
+
+class QuestListDetailSerializer(serializers.ModelSerializer):
+    more_quest = serializers.SerializerMethodField()
+
+    class Meta:
+        model = QuestList
+        fields = ['id', 'uid', 'qid', 'state', 'more_quest']
+
+    def get_more_quest(self, instance):
+        queryset = QuestList.objects.filter(uid=self.context["user_id"], state="TODO")
+        if instance.qid.category == "T":
+            # training 이니까 다음 단계 퀘스트 2개 보여주기 (quest.category=="T" & questlist.uid==me & questlist.state=="todo")
+            queryset = queryset.filter(qid__category="T")
+        elif instance.qid.category == "R":
+            # 목표달성형이니까 랜덤으로 퀘스트 2개 보여주기" (quest.category=="R" & questlist.state=="todo")
+            queryset = queryset.filter(qid__category="R")
+        return QuestListSerializer(queryset, many=True).data
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['qid'] = QuestSerializer(instance.qid).data
+        return response
