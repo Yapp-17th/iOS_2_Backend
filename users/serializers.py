@@ -75,14 +75,25 @@ class QuestListDetailSerializer(serializers.ModelSerializer):
         fields = ['id', 'uid', 'qid', 'state', 'more_quest']
 
     def get_more_quest(self, instance):
-        queryset = QuestList.objects.filter(uid=self.context["user_id"], state="TODO")
+        queryset = QuestList.objects.filter(uid=self.context["user_id"], state="TODO").exclude(id=instance.id)
+        result = []
         if instance.qid.category == "T":
             # training 이니까 다음 단계 퀘스트 2개 보여주기 (quest.category=="T" & questlist.uid==me & questlist.state=="todo")
             queryset = queryset.filter(qid__category="T")
+            qcnt = queryset.count()
+            if qcnt > 0:
+                result.append(Quest.objects.get(id=queryset[0].qid_id))
+            if qcnt > 1:
+                result.append(Quest.objects.get(id=queryset[1].qid_id))
         elif instance.qid.category == "R":
-            # 목표달성형이니까 랜덤으로 퀘스트 2개 보여주기" (quest.category=="R" & questlist.state=="todo")
-            queryset = queryset.filter(qid__category="R")
-        return QuestListSerializer(queryset, many=True).data
+            # 목표달성형이니까 랜덤으로 퀘스트 2개 보여주기 (quest.category=="R" & questlist.state=="todo")
+            queryset = queryset.filter(qid__category="R").order_by('?')
+            qcnt = queryset.count()
+            if qcnt > 0:
+                result.append(Quest.objects.get(id=queryset[0].qid_id))
+            if qcnt > 1:
+                result.append(Quest.objects.get(id=queryset[1].qid_id))
+        return QuestSerializer(result, many=True).data
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
