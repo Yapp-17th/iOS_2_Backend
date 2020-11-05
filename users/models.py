@@ -36,6 +36,9 @@ class CustomUser(AbstractUser):
     )
     state = models.CharField(max_length=10, choices=STATE, default='N')
 
+    weekly_stats = models.CharField(max_length=10, default = '월')
+    monthly_stats = models.FloatField(default=0.0)
+
     def __str__(self):
         return self.email
     
@@ -56,7 +59,6 @@ class CustomUser(AbstractUser):
         if planet:
             feeds = feeds.filter(date__range=[planet.start_date, planet.end_date])
         return feeds.aggregate(Sum('time'))["time__sum"]
-
 
 
 class Feed(Model):

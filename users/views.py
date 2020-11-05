@@ -67,7 +67,7 @@ class FeedViewSet(viewsets.ModelViewSet):
             피드 삭제시 202 응답을 리턴합니다.
         '''
         feed_info = self.get_object()
-        report_user = CustomUser.objects.get(id=self.request.user.id)
+        report_user = CustomUser.objects.get(id=1)
 
         #중복방지
         if str(report_user.id) not in feed_info.report_uidList: 
@@ -98,6 +98,7 @@ def rank_update(request):
     user_info = CustomUser.objects.all()
     serializer = UserSerializer(user_info)
     serializer.rank_save(user_info)
+    serializer.level_save(user_info)
     return Response(status = status.HTTP_202_ACCEPTED)
 
 #레벨 업데이트(새로고침 실행후 호출)

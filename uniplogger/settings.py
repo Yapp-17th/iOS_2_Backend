@@ -195,7 +195,8 @@ CRONJOBS = [
     # ('59 23 * * 0', 'planets.cron.delete_planet'),
     # ('0 0 * * 1', 'planets.cron.create_planet'),
     # 매일 0시 0분 미접속자 판별 ( N-> D )
-    ('0 0 * * *', 'users.cron.check_dormant'),
+    # ('0 0 * * *', 'users.cron.check_dormant'),
+    # ('0 0 1 * *', 'users.cron.monthly_stats'),
 ]
 #rest-auth/logout 시 로그아웃 
 ACCOUNT_LOGOUT_ON_GET = True
