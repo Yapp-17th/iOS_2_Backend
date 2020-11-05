@@ -21,7 +21,7 @@ class CustomUser(AbstractUser):
 
     registeredDate = models.DateTimeField(auto_now_add=True)
     lastlogined = models.DateTimeField(auto_now=True)
-    nickname = models.CharField(max_length=10)
+    nickname = models.CharField(max_length=12)
 
     level = models.IntegerField(default=1)
     rank = models.FloatField(default=0.0)
@@ -81,7 +81,7 @@ class Feed(Model):
 
 class QuestList(models.Model):
     uid = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
-    qid = models.ForeignKey(Quest, on_delete = models.CASCADE)
+    qid = models.ForeignKey(Quest, on_delete = models.CASCADE)  # quest와 questlist는 1:N 관계
     STATE = (
         ('TODO', 'todo'),
         ('DOING', 'doing'),

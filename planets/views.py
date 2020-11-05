@@ -16,7 +16,7 @@ class PlanetViewSet(viewsets.ModelViewSet):
                 user가 속한 행성의 참여자들을 순위대로 보여줌
                 ---
                 아직 user가 행성에 참여하지 않았다면 error message 출력
-                챌린지 순위 : 일주일동안 플로깅 횟수 > 일주일동안 플로깅 거리 > 일주일동안 플로깅 시간
+                챌린지 순위 : [1회:1000점, 1km:100점(0.01km:1점), 1분:1점]으로 산출한 점수
         '''
         user = User.objects.get(id=self.request.user.id)
         my_planet = Planet.objects.filter(id=user.planet_id).first()
