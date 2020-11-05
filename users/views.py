@@ -78,7 +78,7 @@ class QuestListViewSet(viewsets.ModelViewSet):
 
     # url : /users/questlist/{pk}/start_quest (퀘스트 시작 todo->doing)
     @action(detail=True, methods=['get'])
-    def start_quest(self, request, pk):
+    def start(self, request, pk):
         quest = self.get_object()
         quest.state = 'DOING'
         quest.save()
@@ -87,23 +87,34 @@ class QuestListViewSet(viewsets.ModelViewSet):
 
     # url : /users/questlist/{pk}/abandon_quest (퀘스트 포기 doing->abandon)
     @action(detail=True, methods=['get'])
-    def abandon_quest(self, request, pk):
+    def abandon(self, request, pk):
+        '''
+                학습퀘스트 포기는 전체포기 / 목표달성퀘스트 포기는 1개포기
+                ---
+        '''
         quest = self.get_object()
-        quest.state = 'ABANDON'
-        quest.save()
+        if quest.qid.category == 'T':
+            # 트레이닝 퀘스트 포기는 전체 포기
+            all_t_quest = QuestList.objects.filter(uid=request.user, qid__category='T')
+            for t_quest in all_t_quest:
+                t_quest.state = 'ABANDON'
+                t_quest.save()
+        elif quest.qid.category == 'R':
+            quest.state = 'ABANDON'
+            quest.save()
         serializer = self.get_serializer(quest)
         return Response(serializer.data)
 
     # url : /users/questlist/{pk}/delete_quest (퀘스트 삭제 done->삭제)
     @action(detail=True, methods=['get'])
-    def delete_quest(self, request, pk):
+    def delete(self, request, pk):
         quest = self.get_object()
         self.perform_destroy(quest)
         return Response(status=status.HTTP_202_ACCEPTED)
 
     # url : /users/questlist/{pk}/success_quest (퀘스트 완료 doing->done)
     @action(detail=True, methods=['get'])
-    def success_quest(self, request, pk):
+    def success(self, request, pk):
         quest = self.get_object()
         quest.state = 'DONE'
         quest.save()
