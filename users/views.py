@@ -85,25 +85,23 @@ class QuestListViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(quest)
         return Response(serializer.data)
 
-    # url : /users/questlist/{pk}/abandon_quest (퀘스트 포기 doing->abandon)
+    # url : /users/questlist/{pk}/abandon_quest (퀘스트 포기 doing->todo)
     @action(detail=True, methods=['get'])
     def abandon(self, request, pk):
         '''
-                학습퀘스트 포기는 전체포기 / 목표달성퀘스트 포기는 1개포기
+                학습퀘스트 포기는 전체포기(전체 삭제) / 목표달성퀘스트 포기는 1개포기(준비 탭으로)
                 ---
         '''
         quest = self.get_object()
         if quest.qid.category == 'T':
             # 트레이닝 퀘스트 포기는 전체 포기
-            all_t_quest = QuestList.objects.filter(uid=request.user, qid__category='T')
-            for t_quest in all_t_quest:
-                t_quest.state = 'ABANDON'
-                t_quest.save()
+            QuestList.objects.filter(uid=request.user, qid__category='T').delete()
+            return Response(status=status.HTTP_202_ACCEPTED)
         elif quest.qid.category == 'R':
-            quest.state = 'ABANDON'
+            quest.state = 'TODO'
             quest.save()
-        serializer = self.get_serializer(quest)
-        return Response(serializer.data)
+            serializer = self.get_serializer(quest)
+            return Response(serializer.data)
 
     # url : /users/questlist/{pk}/delete_quest (퀘스트 삭제 done->삭제)
     @action(detail=True, methods=['get'])
