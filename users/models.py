@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
-from django.contrib import auth
-from django.conf import settings
+
+from planets.models import Planet
 from quests.models import Quest
 from django.db.models import CharField, Model
 from django_mysql.models import ListCharField
@@ -21,7 +21,7 @@ class CustomUser(AbstractUser):
 
     registeredDate = models.DateTimeField(auto_now_add=True)
     lastlogined = models.DateTimeField(auto_now=True)
-    nickname = models.CharField(max_length=10)
+    nickname = models.CharField(max_length=10,unique=True)
 
     level = models.IntegerField(default=1)
     rank = models.FloatField(default=0.0)
@@ -35,6 +35,10 @@ class CustomUser(AbstractUser):
         ('L', 'Leaved'),
     )
     state = models.CharField(max_length=10, choices=STATE, default='N')
+
+    weekly_stats = models.CharField(max_length=10, default = '월')
+    monthly_stats = models.FloatField(default=0.0)
+    experience = models.FloatField(default = 0.0)
 
     def __str__(self):
         return self.email
@@ -56,7 +60,6 @@ class CustomUser(AbstractUser):
         if planet:
             feeds = feeds.filter(date__range=[planet.start_date, planet.end_date])
         return feeds.aggregate(Sum('time'))["time__sum"]
-
 
 
 class Feed(Model):
