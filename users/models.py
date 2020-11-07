@@ -21,7 +21,8 @@ class CustomUser(AbstractUser):
 
     registeredDate = models.DateTimeField(auto_now_add=True)
     lastlogined = models.DateTimeField(auto_now=True)
-    nickname = models.CharField(max_length=10,unique=True)
+    nickname = models.CharField(max_length=12,unique=True)
+
 
     level = models.IntegerField(default=1)
     rank = models.FloatField(default=0.0)
@@ -42,6 +43,9 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    class Meta:
+        ordering = ('nickname',)
     
     def get_feed_cnt(self, planet=None):
         feeds = Feed.objects.filter(uid=self.id)
@@ -53,13 +57,13 @@ class CustomUser(AbstractUser):
         feeds = Feed.objects.filter(uid=self.id)
         if planet:
             feeds = feeds.filter(date__range=[planet.start_date, planet.end_date])
-        return feeds.aggregate(Sum('distance'))["distance__sum"]
+        return feeds.aggregate(Sum('distance'))["distance__sum"] or 0
 
     def get_time(self, planet=None):
         feeds = Feed.objects.filter(uid=self.id)
         if planet:
             feeds = feeds.filter(date__range=[planet.start_date, planet.end_date])
-        return feeds.aggregate(Sum('time'))["time__sum"]
+        return feeds.aggregate(Sum('time'))["time__sum"] or 0
 
 
 class Feed(Model):
@@ -81,7 +85,7 @@ class Feed(Model):
 
 class QuestList(models.Model):
     uid = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
-    qid = models.ForeignKey(Quest, on_delete = models.CASCADE)
+    qid = models.ForeignKey(Quest, on_delete = models.CASCADE)  # quest와 questlist는 1:N 관계
     STATE = (
         ('TODO', 'todo'),
         ('DOING', 'doing'),

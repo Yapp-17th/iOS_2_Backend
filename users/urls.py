@@ -16,6 +16,8 @@ urlpatterns = [
     path('', include('rest_auth.urls')),    # login/, logout/, ...
     path('registration/', include('rest_auth.registration.urls')),
 
+    path('quest_to_user/', views.quest_to_user),
+
     path('feed/', include(Feed_router.urls)),
     path('questlist/', include(Questlist_router.urls)),
     path('', include(User_router.urls)),

@@ -1,4 +1,7 @@
 from rest_framework import serializers
+
+from quests.models import Quest
+from quests.serializers import QuestSerializer
 from users.models import CustomUser,Feed,QuestList
 
 class UserSerializer(serializers.ModelSerializer):
@@ -33,12 +36,66 @@ class UserSerializer(serializers.ModelSerializer):
         user_info.save()
 
 
+# 챌린지(행성)에서만 보여줄 user 정보(planet_score) 추가한 serializer 따로 정의
+class PlayerSerializer(serializers.ModelSerializer):
+    planet_score = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'email', 'nickname', 'planet_score']
+
+    def get_planet_score(self, instance):
+        return instance.get_feed_cnt(instance.planet) * 1000 \
+               + instance.get_distance(instance.planet) * 100 \
+               + instance.get_time(instance.planet)
+
+
 class FeedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
         fields = '__all__'
 
+
 class QuestListSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestList
-        fields= '__all__'
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['qid'] = QuestSerializer(instance.qid).data
+        return response
+
+
+class QuestListDetailSerializer(serializers.ModelSerializer):
+    more_quest = serializers.SerializerMethodField()
+
+    class Meta:
+        model = QuestList
+        fields = ['id', 'uid', 'qid', 'state', 'more_quest']
+
+    def get_more_quest(self, instance):
+        queryset = QuestList.objects.filter(uid=self.context["user_id"], state="TODO").exclude(id=instance.id)
+        result = []
+        if instance.qid.category == "T":
+            # training 이니까 다음 단계 퀘스트 2개 보여주기 (quest.category=="T" & questlist.uid==me & questlist.state=="todo")
+            queryset = queryset.filter(qid__category="T")
+            qcnt = queryset.count()
+            if qcnt > 0:
+                result.append(Quest.objects.get(id=queryset[0].qid_id))
+            if qcnt > 1:
+                result.append(Quest.objects.get(id=queryset[1].qid_id))
+        elif instance.qid.category == "R":
+            # 목표달성형이니까 랜덤으로 퀘스트 2개 보여주기 (quest.category=="R" & questlist.state=="todo")
+            queryset = queryset.filter(qid__category="R").order_by('?')
+            qcnt = queryset.count()
+            if qcnt > 0:
+                result.append(Quest.objects.get(id=queryset[0].qid_id))
+            if qcnt > 1:
+                result.append(Quest.objects.get(id=queryset[1].qid_id))
+        return QuestSerializer(result, many=True).data
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['qid'] = QuestSerializer(instance.qid).data
+        return response
