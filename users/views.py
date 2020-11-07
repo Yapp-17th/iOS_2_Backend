@@ -116,9 +116,10 @@ class QuestListViewSet(viewsets.ModelViewSet):
         quest = self.get_object()
         quest.state = 'DONE'
         quest.save()
-
-        # TODO: 유저 정보 갱신 필요 !!! (퀘스트 완료했으니까 level?)
-
+        # 유저 경험치 +1.5
+        quser = CustomUser.objects.get(id=request.user.id)
+        quser.experience += 1.5
+        quser.save()
         serializer = self.get_serializer(quest)
         return Response(serializer.data)
 
