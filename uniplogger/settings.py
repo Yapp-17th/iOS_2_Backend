@@ -197,17 +197,20 @@ CRONJOBS = [
     # ('0 0 * * 1', 'planets.cron.create_planet'),
     # 매일 0시 0분 미접속자 판별 ( N-> D )
     # ('0 0 * * *', 'users.cron.check_dormant'),
-    # ('0 0 1 * *', 'users.cron.monthly_stats'),
+    # ('0 0 * 1 *', 'users.cron.monthly_stats'),
+    # ('0 0 * * 1', 'users.cron.weekly_stats'),
+    ('* * * * *', 'users.cron.weekly_stats','>> /Users/guinness/Uniplogger/iOS_2_Backend/users/cronlog.log'),
 ]
 #rest-auth/logout 시 로그아웃 
 ACCOUNT_LOGOUT_ON_GET = True
 
-'''
+
 PUSH_NOTIFICATIONS_SETTINGS = {
     "APNS_CERTIFICATE": "/path/to/your/certificate.pem",
-    "APNS_AUTH_KEY_PATH" : APNS 서명 키 파일 절대경로(토큰기반인증)
-    "APNS_AUTH_KEY_ID" : 애플 개발자 계정 ID
-    "APNS_TOPIC": 앱의 번들 ID 인 원격 알림의 주제 지정 안하는 경우 기본주제 사용, 
-    "APNS_USE_ALTERNATIVE_PORT": 443 대신 포트 2197 사용
-    "APNS_USE_SANDBOX" : api.push.apple.com 대신 api.development.push.apple.com 사용
-}'''
+    "APNS_AUTH_KEY_PATH" : "/Users/guinness/Downloads/AuthKey_2Y736DMUC6.p8",
+    "APNS_AUTH_KEY_ID" : "[2Y736DMUC6]",
+    "APNS_TEAM_ID" : "[97C96KP84G]",
+    "APNS_TOPIC": "kr.co.yapp17.iOS2.UniPlogger",
+    #"APNS_USE_ALTERNATIVE_PORT": 443 대신 포트 2197 사용
+    #"APNS_USE_SANDBOX" : api.push.apple.com 대신 api.development.push.apple.com 사용
+}

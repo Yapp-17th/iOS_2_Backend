@@ -28,4 +28,13 @@ def monthly_stats():
         avg_count = round(feeds_count/month,2)
         user.monthly_stats = avg_count
         user.save()
-    
+
+def weekly_stats():
+    print('log')
+    users = CustomUser.objects.all()
+    for user in users : 
+        date = user.get_distance_for_level()
+        print(date)
+
+
+

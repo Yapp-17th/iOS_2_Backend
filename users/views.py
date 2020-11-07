@@ -24,15 +24,15 @@ class UserViewSet(viewsets.ModelViewSet):
                 닉네임이 중복값일경우 409 응답을 리턴합니다.
         ''' 
         nickname = request.data.get('nickname') 
+        users = CustomUser.objects.all()
+        for user in users:
+            if user.nickname == nickname:
+                return Response(status=status.HTTP_409_CONFLICT)
+ 
         user_info  = self.get_object()
         user_info.nickname = nickname 
-
-        try:
-            self.perform_update(user_info) 
-            return Response(status=status.HTTP_201_CREATED)
-        except IntegrityError: 
-            # 이미 존재하는 닉네임일때
-            return Response(status=status.HTTP_409_CONFLICT) 
+        self.perform_update(user_info) 
+        return Response(status=status.HTTP_201_CREATED)
         
 
     #lastlogined 갱신(앱실행시 호출)
