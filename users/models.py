@@ -38,6 +38,7 @@ class CustomUser(AbstractUser):
 
     weekly_stats = models.CharField(max_length=10, default = '월')
     monthly_stats = models.FloatField(default=0.0)
+    experience = models.FloatField(default = 0.0)
 
     def __str__(self):
         return self.email

@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'django_crontab',
     'django_mysql',
+    "push_notifications",
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -200,3 +201,13 @@ CRONJOBS = [
 ]
 #rest-auth/logout 시 로그아웃 
 ACCOUNT_LOGOUT_ON_GET = True
+
+'''
+PUSH_NOTIFICATIONS_SETTINGS = {
+    "APNS_CERTIFICATE": "/path/to/your/certificate.pem",
+    "APNS_AUTH_KEY_PATH" : APNS 서명 키 파일 절대경로(토큰기반인증)
+    "APNS_AUTH_KEY_ID" : 애플 개발자 계정 ID
+    "APNS_TOPIC": 앱의 번들 ID 인 원격 알림의 주제 지정 안하는 경우 기본주제 사용, 
+    "APNS_USE_ALTERNATIVE_PORT": 443 대신 포트 2197 사용
+    "APNS_USE_SANDBOX" : api.push.apple.com 대신 api.development.push.apple.com 사용
+}'''

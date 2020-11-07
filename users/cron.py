@@ -1,6 +1,7 @@
 from users import views
 from users.models import CustomUser,Feed
 import datetime
+from push_notifications.models import APNSDevice
 
 from dateutil.relativedelta import relativedelta
 
@@ -10,6 +11,9 @@ def check_dormant():
         if user.state == "N":
             if datetime.datetime.now() >= user.lastlogined + datetime.timedelta(minutes=1):
                 user.state = "D"
+                #push noti
+                #device = GCMDevice.objects.get(registration_id=gcm_reg_id)
+                #device.send_message("Test")
                 user.save()
 
 
