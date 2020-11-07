@@ -21,7 +21,8 @@ class CustomUser(AbstractUser):
 
     registeredDate = models.DateTimeField(auto_now_add=True)
     lastlogined = models.DateTimeField(auto_now=True)
-    nickname = models.CharField(max_length=12)
+    nickname = models.CharField(max_length=12,unique=True)
+
 
     level = models.IntegerField(default=1)
     rank = models.FloatField(default=0.0)
@@ -35,6 +36,10 @@ class CustomUser(AbstractUser):
         ('L', 'Leaved'),
     )
     state = models.CharField(max_length=10, choices=STATE, default='N')
+
+    weekly_stats = models.CharField(max_length=10, default = '월')
+    monthly_stats = models.FloatField(default=0.0)
+    experience = models.FloatField(default = 0.0)
 
     def __str__(self):
         return self.email
@@ -59,7 +64,6 @@ class CustomUser(AbstractUser):
         if planet:
             feeds = feeds.filter(date__range=[planet.start_date, planet.end_date])
         return feeds.aggregate(Sum('time'))["time__sum"] or 0
-
 
 
 class Feed(Model):
