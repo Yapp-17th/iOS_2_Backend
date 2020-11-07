@@ -199,18 +199,18 @@ CRONJOBS = [
     # ('0 0 * * *', 'users.cron.check_dormant'),
     # ('0 0 * 1 *', 'users.cron.monthly_stats'),
     # ('0 0 * * 1', 'users.cron.weekly_stats'),
-    ('* * * * *', 'users.cron.weekly_stats','>> /Users/guinness/Uniplogger/iOS_2_Backend/users/cronlog.log'),
+    #('* * * * *', 'users.cron.weekly_stats','>> /Users/guinness/Uniplogger/iOS_2_Backend/users/cronlog.log'),
 ]
 #rest-auth/logout 시 로그아웃 
 ACCOUNT_LOGOUT_ON_GET = True
 
 
 PUSH_NOTIFICATIONS_SETTINGS = {
-    "APNS_CERTIFICATE": "/path/to/your/certificate.pem",
-    "APNS_AUTH_KEY_PATH" : "/Users/guinness/Downloads/AuthKey_2Y736DMUC6.p8",
-    "APNS_AUTH_KEY_ID" : "[2Y736DMUC6]",
-    "APNS_TEAM_ID" : "[97C96KP84G]",
-    "APNS_TOPIC": "kr.co.yapp17.iOS2.UniPlogger",
+    "APNS_CERTIFICATE": secrets["APNS_CERTIFICATE"],
+    "APNS_AUTH_KEY_PATH" : secrets["APNS_AUTH_KEY_PATH"],
+    "APNS_AUTH_KEY_ID" : secrets["APNS_AUTH_KEY_ID"],
+    "APNS_TEAM_ID" : secrets["APNS_TEAM_ID" ],
+    "APNS_TOPIC": secrets["APNS_TOPIC"],
     #"APNS_USE_ALTERNATIVE_PORT": 443 대신 포트 2197 사용
     #"APNS_USE_SANDBOX" : api.push.apple.com 대신 api.development.push.apple.com 사용
 }

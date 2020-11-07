@@ -159,7 +159,6 @@ def rank_update(request):
     user_info = CustomUser.objects.all()
     serializer = UserSerializer(user_info)
     serializer.rank_save(user_info)
-    serializer.level_save(user_info)
     return Response(status = status.HTTP_202_ACCEPTED)
 
 #레벨 업데이트(새로고침 실행후 호출)

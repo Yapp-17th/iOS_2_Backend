@@ -12,7 +12,7 @@ def check_dormant():
             if datetime.datetime.now() >= user.lastlogined + datetime.timedelta(minutes=1):
                 user.state = "D"
                 #push noti
-                #device = GCMDevice.objects.get(registration_id=gcm_reg_id)
+                #device = APNSDevice.objects.get(registration_id=apns_token)
                 #device.send_message("Test")
                 user.save()
 
