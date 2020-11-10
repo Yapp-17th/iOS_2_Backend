@@ -20,9 +20,9 @@ urlpatterns = [
 
     path('feed/', include(Feed_router.urls)),
     path('questlist/', include(Questlist_router.urls)),
-    path('', include(User_router.urls)),
     path('rank_update/',views.rank_update),
     path('level_update/',views.level_update),
+    path('', include(User_router.urls)),
     #path('device/apns/', include(push_router.urls)),
 ]
 
