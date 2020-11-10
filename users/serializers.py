@@ -23,13 +23,12 @@ class UserSerializer(serializers.ModelSerializer):
             rank_list[user_idx][0] = rank
             user_idx+=1
         rank_list = sorted(rank_list, key = lambda x : x[1])
-        
-        user_idx = 0
-        for user in user_info:
-            user.rank = rank_list[user_idx][0]   
-            user_idx += 1
+        for i in rank_list:
+            user = CustomUser.objects.get(id = i[1])
+            total = CustomUser.objects.all().count()
+            user.rank = round(i[0] / total * 100,1)
             user.save()
-
+    
     def level_save(self,user_info):
         #기준 정확하게 정해지면 추가
         user_info.level += 1
