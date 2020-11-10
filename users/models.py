@@ -37,7 +37,7 @@ class CustomUser(AbstractUser):
     )
     state = models.CharField(max_length=10, choices=STATE, default='N')
 
-    weekly_stats = models.CharField(max_length=10, default = '월')
+    weekly_stats = models.CharField(max_length=10, default = '-')
     monthly_stats = models.FloatField(default=0.0)
     experience = models.FloatField(default = 0.0)
 
