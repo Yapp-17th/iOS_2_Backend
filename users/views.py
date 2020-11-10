@@ -163,7 +163,6 @@ def rank_update(request):
     return Response(status = status.HTTP_202_ACCEPTED)
 
 
-    
 
 #레벨 업데이트(새로고침 실행후 호출)
 @api_view(['GET'])

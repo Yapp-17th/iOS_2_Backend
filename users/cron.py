@@ -29,7 +29,6 @@ def monthly_stats():
         user.save()
 
 def weekly_stats():
-    print('log')
     week = ['월','화','수','목','금','토','일']
     startday = datetime.datetime.now() - relativedelta(weeks=1)
     endday = datetime.datetime.now()
