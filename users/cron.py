@@ -2,7 +2,6 @@ from users import views
 from users.models import CustomUser,Feed
 import datetime
 from push_notifications.models import APNSDevice
-
 from dateutil.relativedelta import relativedelta
 
 def check_dormant():
@@ -12,7 +11,7 @@ def check_dormant():
             if datetime.datetime.now() >= user.lastlogined + datetime.timedelta(minutes=1):
                 user.state = "D"
                 #push noti
-                #device = GCMDevice.objects.get(registration_id=gcm_reg_id)
+                #device = APNSDevice.objects.get(registration_id=apns_token)
                 #device.send_message("Test")
                 user.save()
 
@@ -30,11 +29,12 @@ def monthly_stats():
         user.save()
 
 def weekly_stats():
-    print('log')
-    users = CustomUser.objects.all()
-    for user in users : 
-        date = user.get_distance_for_level()
-        print(date)
-
-
-
+    week = ['월','화','수','목','금','토','일']
+    startday = datetime.datetime.now() - relativedelta(weeks=1)
+    endday = datetime.datetime.now()
+    feeds = Feed.objects.filter(date__range=[startday,endday]).values_list('uid',flat=True).distinct()
+    for i in feeds:
+        user = CustomUser.objects.get(id = int(i))
+        best = Feed.objects.filter(uid = int(i)).order_by('-time')[0]
+        user.weekly_stats = week[best.date.weekday()]
+        user.save()
