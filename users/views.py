@@ -190,3 +190,4 @@ def quest_to_user(request):
     for quest in all_quest:
         QuestList.objects.create(uid=uid, qid=quest)
     return Response(status=status.HTTP_201_CREATED)
+    
