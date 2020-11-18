@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import api_view, action
-
+from PIL import Image
 from quests.models import Quest
 from .serializers import UserSerializer, FeedSerializer, QuestListSerializer, QuestListDetailSerializer
 from .models import CustomUser,Feed,QuestList
@@ -71,7 +71,7 @@ class FeedViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
+    
     #신고기능_피드
     @action(detail=True, methods=['get'])
     def report_feed(self,request, pk, *args, **kwargs):
