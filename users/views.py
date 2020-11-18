@@ -14,6 +14,7 @@ from dateutil.relativedelta import relativedelta
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
+    http_method_names = ['get','put','delete']
     
     def update(self, request, *args, **kwargs):
         '''
@@ -57,7 +58,6 @@ class UserViewSet(viewsets.ModelViewSet):
 class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
-
     #신고기능_피드
     @action(detail=True, methods=['get'])
     def report_feed(self,request, pk, *args, **kwargs):
@@ -168,7 +168,7 @@ def level_update(request,self, *args, **kwargs):
     '''
             레벨 업데이트
             ---
-            전체유저 순위를 정렬하여 랭크값을 갱신합니다.
+            유저의 상태에 맞추어 레벨을 업데이트합니다.
             갱신이 완료되면 202 응답을 리턴합니다.
     '''
     user_info = CustomUser.objects.get(id = self.request.user.id)

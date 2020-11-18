@@ -30,7 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
             user.save()
     
     def level_save(self,user_info):
-        #기준 정확하게 정해지면 추가
+        #if user.feed
         user_info.level += 1
         user_info.save()
 
