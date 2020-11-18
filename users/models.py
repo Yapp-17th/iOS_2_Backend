@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
-
+from django_resized import ResizedImageField
 from planets.models import Planet
 from quests.models import Quest
 from django.db.models import CharField, Model
@@ -78,8 +78,7 @@ class Feed(Model):
     date = models.DateTimeField(auto_now_add=True)
     distance = models.FloatField()  # "XX.XX"km단위
     time = models.IntegerField()    # "분"단위
-  
-    photo = models.ImageField()
+    photo = ResizedImageField(size=[300,300],upload_to='',force_format='JPEG',quality=95)
     report_feed_cnt = models.IntegerField(default=0)     # 게시물의 신고당한 횟수
     report_uidList = ListCharField(
         base_field=CharField(max_length=10),

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import api_view, action
-
+from PIL import Image
 from quests.models import Quest
 from .serializers import UserSerializer, FeedSerializer, QuestListSerializer, QuestListDetailSerializer
 from .models import CustomUser,Feed,QuestList
@@ -14,6 +14,7 @@ from dateutil.relativedelta import relativedelta
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
+    http_method_names = ['get','put','delete','head'] 
     
     def update(self, request, *args, **kwargs):
         '''
@@ -57,7 +58,20 @@ class UserViewSet(viewsets.ModelViewSet):
 class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
-
+    http_method_names = ['get','post','head']
+    def create(self,request):
+        serializer = self.get_serializer(data=request.data)
+        #피드 등록시 경험치 1증가
+        user = CustomUser.objects.get(id=request.data.get(
+            'uid',''
+        ))
+        user.experience += 1
+        user.save()
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
     #신고기능_피드
     @action(detail=True, methods=['get'])
     def report_feed(self,request, pk, *args, **kwargs):
@@ -71,7 +85,7 @@ class FeedViewSet(viewsets.ModelViewSet):
             피드 삭제시 202 응답을 리턴합니다.
         '''
         feed_info = self.get_object()
-        report_user = CustomUser.objects.get(id=1)
+        report_user = CustomUser.objects.get(id=request.user.id)
 
         #중복방지
         if str(report_user.id) not in feed_info.report_uidList: 
@@ -168,10 +182,10 @@ def level_update(request,self, *args, **kwargs):
     '''
             레벨 업데이트
             ---
-            전체유저 순위를 정렬하여 랭크값을 갱신합니다.
+            유저의 상태에 맞추어 레벨을 업데이트합니다.
             갱신이 완료되면 202 응답을 리턴합니다.
     '''
-    user_info = CustomUser.objects.get(id = self.request.user.id)
+    user_info = CustomUser.objects.get(id = request.user.id)
     serializer = UserSerializer(user_info)
     serializer.level_save(user_info)
     return Response(serializer.data,status = status.HTTP_202_ACCEPTED)

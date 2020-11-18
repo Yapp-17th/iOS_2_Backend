@@ -7,7 +7,7 @@ from users.models import CustomUser,Feed,QuestList
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'nickname', 'level', 'rank', 'state', 'planet', 'weekly_stats', 'monthly_stats']
+        fields = ['id', 'email', 'nickname', 'level', 'rank', 'state', 'planet', 'weekly_stats', 'monthly_stats','experience']
     
     def rank_save(self,user_info):
         rank_list = []
@@ -30,9 +30,10 @@ class UserSerializer(serializers.ModelSerializer):
             user.save()
     
     def level_save(self,user_info):
-        #기준 정확하게 정해지면 추가
-        user_info.level += 1
-        user_info.save()
+        if user_info.experience >= 5:
+            user_info.level += 1
+            user_info.experience = 0
+            user_info.save()
 
 
 # 챌린지(행성)에서만 보여줄 user 정보(planet_score) 추가한 serializer 따로 정의
