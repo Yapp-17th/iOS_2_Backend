@@ -58,6 +58,19 @@ class UserViewSet(viewsets.ModelViewSet):
 class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
+    
+    def create(self,request):
+        serializer = self.get_serializer(data=request.data)
+        user = CustomUser.objects.get(id=request.data.get(
+            'uid',''
+        ))
+        user.experience += 1
+        user.save()
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
     #신고기능_피드
     @action(detail=True, methods=['get'])
     def report_feed(self,request, pk, *args, **kwargs):
@@ -71,7 +84,7 @@ class FeedViewSet(viewsets.ModelViewSet):
             피드 삭제시 202 응답을 리턴합니다.
         '''
         feed_info = self.get_object()
-        report_user = CustomUser.objects.get(id=1)
+        report_user = CustomUser.objects.get(id=request.user.id)
 
         #중복방지
         if str(report_user.id) not in feed_info.report_uidList: 

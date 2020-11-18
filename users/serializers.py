@@ -7,7 +7,7 @@ from users.models import CustomUser,Feed,QuestList
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'nickname', 'level', 'rank', 'state', 'planet', 'weekly_stats', 'monthly_stats']
+        fields = ['id', 'email', 'nickname', 'level', 'rank', 'state', 'planet', 'weekly_stats', 'monthly_stats','experience']
     
     def rank_save(self,user_info):
         rank_list = []
