@@ -61,6 +61,7 @@ class FeedViewSet(viewsets.ModelViewSet):
     
     def create(self,request):
         serializer = self.get_serializer(data=request.data)
+        #피드 등록시 경험치 1증가
         user = CustomUser.objects.get(id=request.data.get(
             'uid',''
         ))
@@ -184,7 +185,7 @@ def level_update(request,self, *args, **kwargs):
             유저의 상태에 맞추어 레벨을 업데이트합니다.
             갱신이 완료되면 202 응답을 리턴합니다.
     '''
-    user_info = CustomUser.objects.get(id = self.request.user.id)
+    user_info = CustomUser.objects.get(id = request.user.id)
     serializer = UserSerializer(user_info)
     serializer.level_save(user_info)
     return Response(serializer.data,status = status.HTTP_202_ACCEPTED)

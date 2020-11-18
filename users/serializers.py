@@ -30,9 +30,10 @@ class UserSerializer(serializers.ModelSerializer):
             user.save()
     
     def level_save(self,user_info):
-        #if user.feed
-        user_info.level += 1
-        user_info.save()
+        if user_info.experience >= 5:
+            user_info.level += 1
+            user_info.experience = 0
+            user_info.save()
 
 
 # 챌린지(행성)에서만 보여줄 user 정보(planet_score) 추가한 serializer 따로 정의
