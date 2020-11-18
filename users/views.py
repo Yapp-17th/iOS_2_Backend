@@ -58,7 +58,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
-    
+    http_method_names = ['get','post','head']
     def create(self,request):
         serializer = self.get_serializer(data=request.data)
         #피드 등록시 경험치 1증가
