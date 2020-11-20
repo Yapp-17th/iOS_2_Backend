@@ -79,12 +79,12 @@ class QuestListDetailSerializer(serializers.ModelSerializer):
         result = []
         if instance.qid.category == "T":
             # training 이니까 다음 단계 퀘스트 2개 보여주기 (quest.category=="T" & questlist.uid==me & questlist.state=="todo")
-            queryset = queryset.filter(qid__category="T")
-            qcnt = queryset.count()
-            if qcnt > 0:
-                result.append(Quest.objects.get(id=queryset[0].qid_id))
-            if qcnt > 1:
-                result.append(Quest.objects.get(id=queryset[1].qid_id))
+            # queryset = queryset.filter(qid__category="T")
+            cur = instance.qid.step
+            if cur < 10:
+                result.append(Quest.objects.get(step=cur+1))
+            if cur < 9:
+                result.append(Quest.objects.get(step=cur+2))
         elif instance.qid.category == "R":
             # 목표달성형이니까 랜덤으로 퀘스트 2개 보여주기 (quest.category=="R" & questlist.state=="todo")
             queryset = queryset.filter(qid__category="R").order_by('?')

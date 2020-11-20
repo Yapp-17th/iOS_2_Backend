@@ -113,7 +113,6 @@ class QuestListViewSet(viewsets.ModelViewSet):
     # 퀘스트 상세 설명 화면, 학습퀘스트일 경우 다음 2개 퀘스트, 목표달성일 경우 랜덤 2개 퀘스트 보여주기
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        # serializer = QuestListDetailSerializer(instance)
         serializer = QuestListDetailSerializer(
             instance,
             context={'user_id': request.user.id}
@@ -133,8 +132,10 @@ class QuestListViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def abandon(self, request, pk):
         '''
-                학습퀘스트 포기는 전체포기(전체 삭제) / 목표달성퀘스트 포기는 1개포기(준비 탭으로)
+                퀘스트 포기
                 ---
+                학습퀘스트 포기는 전체포기(전체 삭제) / 목표달성퀘스트 포기는 1개포기(준비 탭으로)
+
         '''
         quest = self.get_object()
         if quest.qid.category == 'T':
@@ -150,6 +151,11 @@ class QuestListViewSet(viewsets.ModelViewSet):
     # url : /users/questlist/{pk}/delete_quest (퀘스트 삭제 done->삭제)
     @action(detail=True, methods=['get'])
     def delete(self, request, pk):
+        '''
+                퀘스트 삭제
+                ---
+                완료 상태인 퀘스트는 삭제할 수 있음
+        '''
         quest = self.get_object()
         self.perform_destroy(quest)
         return Response(status=status.HTTP_202_ACCEPTED)
@@ -157,6 +163,11 @@ class QuestListViewSet(viewsets.ModelViewSet):
     # url : /users/questlist/{pk}/success_quest (퀘스트 완료 doing->done)
     @action(detail=True, methods=['get'])
     def success(self, request, pk):
+        '''
+                퀘스트 완료
+                ---
+                퀘스트를 완료상태로 바꾸고 유저정보 갱신 (experience += 1.5)
+        '''
         quest = self.get_object()
         quest.state = 'DONE'
         quest.save()
@@ -202,13 +213,15 @@ def level_update(request,self, *args, **kwargs):
 @api_view(['GET'])
 def quest_to_user(request):
     '''
-            모든 quest를 user에게 할당 (user별 1번만 호출, default state:"todo")
+            모든 quest를 user에게 할당
             ---
+            회원가입한 후, 모든 유저에게 퀘스트를 부여하기 위한 것
+            (user별 1번만 호출, default state:"todo")
     '''
-    # QuestList.objects.all().delete()
     uid = request.user
+    QuestList.objects.filter(uid=uid).delete()
+
     all_quest = Quest.objects.all()
     for quest in all_quest:
         QuestList.objects.create(uid=uid, qid=quest)
     return Response(status=status.HTTP_201_CREATED)
-
