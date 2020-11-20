@@ -31,8 +31,8 @@ class UserSerializer(serializers.ModelSerializer):
     
     def level_save(self,user_info):
         if user_info.experience >= 5:
-            user_info.level += 1
-            user_info.experience = 0
+            user_info.level += user_info.experience // 5
+            user_info.experience = user_info.experience % 5
             user_info.save()
 
 

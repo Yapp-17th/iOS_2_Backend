@@ -195,15 +195,15 @@ def rank_update(request):
 
 #레벨 업데이트(새로고침 실행후 호출)
 @api_view(['GET'])
-def level_update(request,self, *args, **kwargs):
+def level_update(request, *args, **kwargs):
     '''
             레벨 업데이트
             ---
-            유저의 경험치가 5 이상일경우 레벨을 올립니다.
-            레벨이 올라가면 경험치는 0으로 초기화됩니다.
+            유저의 경험치가 5 이상일경우 경험치/5의 몫만큼 레벨을 올립니다.
+            레벨이 올라가면 경험치는 경험치/5의 나머지로 변경됩니다.
             성공적으로 갱신이 완료되면 202 응답을 리턴합니다.
     '''
-    user_info = CustomUser.objects.get(id = request.user.id)
+    user_info = CustomUser.objects.get(id = 9)
     serializer = UserSerializer(user_info)
     serializer.level_save(user_info)
     return Response(serializer.data,status = status.HTTP_202_ACCEPTED)
