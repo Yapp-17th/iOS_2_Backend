@@ -60,6 +60,12 @@ class FeedViewSet(viewsets.ModelViewSet):
     serializer_class = FeedSerializer
     http_method_names = ['get','post','head']
     def create(self,request):
+        '''
+                피드 등록 및 경험치 증가
+                --
+                피드 등록시 등록한 유저의 경험치가 1 증가되면서
+                사진, 거리, 시간등 Feed내의 필드값들이 저장됩니다.
+        '''
         serializer = self.get_serializer(data=request.data)
         #피드 등록시 경험치 1증가
         user = CustomUser.objects.get(id=request.data.get(
@@ -81,7 +87,7 @@ class FeedViewSet(viewsets.ModelViewSet):
             신고회원 id값 저장 후 신고수를 누적시킵니다.
             동일한 회원이 신고할 시 400 응답을 리턴하고
             해당 신고는 반영되지 않습니다.
-            신고자가 3명이상이면 피드를 삭제합니다. 
+            신고자가 3명이상이면 피드를 삭제하면서 경험치를 줄입니다. 
             피드 삭제시 202 응답을 리턴합니다.
         '''
         feed_info = self.get_object()
@@ -182,8 +188,9 @@ def level_update(request,self, *args, **kwargs):
     '''
             레벨 업데이트
             ---
-            유저의 상태에 맞추어 레벨을 업데이트합니다.
-            갱신이 완료되면 202 응답을 리턴합니다.
+            유저의 경험치가 5 이상일경우 레벨을 올립니다.
+            레벨이 올라가면 경험치는 0으로 초기화됩니다.
+            성공적으로 갱신이 완료되면 202 응답을 리턴합니다.
     '''
     user_info = CustomUser.objects.get(id = request.user.id)
     serializer = UserSerializer(user_info)
@@ -204,4 +211,4 @@ def quest_to_user(request):
     for quest in all_quest:
         QuestList.objects.create(uid=uid, qid=quest)
     return Response(status=status.HTTP_201_CREATED)
-    
+
