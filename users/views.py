@@ -138,6 +138,7 @@ class QuestListViewSet(viewsets.ModelViewSet):
         '''
                 퀘스트 포기
                 ---
+                (토큰 필요한지 안필요한지 채워주세요~!)
                 학습퀘스트 포기는 전체포기(전체 삭제) / 목표달성퀘스트 포기는 1개포기(준비 탭으로)
 
         '''
@@ -158,6 +159,7 @@ class QuestListViewSet(viewsets.ModelViewSet):
         '''
                 퀘스트 삭제
                 ---
+                (토큰 필요한지 안필요한지 채워주세요~!)
                 완료 상태인 퀘스트는 삭제할 수 있음
         '''
         quest = self.get_object()
@@ -170,6 +172,7 @@ class QuestListViewSet(viewsets.ModelViewSet):
         '''
                 퀘스트 완료
                 ---
+                (토큰 필요)
                 퀘스트를 완료상태로 바꾸고 유저정보 갱신 (experience += 1.5)
         '''
         quest = self.get_object()
@@ -222,6 +225,7 @@ def quest_to_user(request):
     '''
             모든 quest를 user에게 할당
             ---
+            (토큰 필요)
             회원가입한 후, 모든 유저에게 퀘스트를 부여하기 위한 것
             (user별 1번만 호출, default state:"todo")
     '''

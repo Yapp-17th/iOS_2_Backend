@@ -21,6 +21,7 @@ class TrashcanViewSet(viewsets.ModelViewSet):
         '''
                 지정한 쓰레기통에 대해 삭제 요청을 보내는 API
                 ---
+                (토큰 필요X)
                 삭제 요청이 오면 delete_cnt 값이 증가하며, delete_cnt 값이 3이 되면 삭제한다.
         '''
         instance = self.get_object()
@@ -36,6 +37,7 @@ def get_trashcan_csv(request):
     '''
             csv 파일의 쓰레기통 정보를 가져옴
             ---
+            (토큰 필요X)
     '''
     Trashcan.objects.all().delete()
 

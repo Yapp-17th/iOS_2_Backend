@@ -15,6 +15,7 @@ class PlanetViewSet(viewsets.ModelViewSet):
         '''
                 user가 속한 행성의 참여자들을 순위대로 보여줌
                 ---
+                (토큰 필요)
                 아직 user가 행성에 참여하지 않았다면 error message 출력
                 챌린지 순위 : [1회:1000점, 1km:100점(0.01km:1점), 1분:1점]으로 산출한 점수
         '''
@@ -30,6 +31,7 @@ class PlanetViewSet(viewsets.ModelViewSet):
         '''
                 이번주 행성(Planet)에 참여
                 ---
+                (토큰 필요)
                 이번주에 이미 참여했다면 error message 출력
         '''
         user = User.objects.get(id=self.request.user.id)
