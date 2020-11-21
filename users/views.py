@@ -20,10 +20,12 @@ class UserViewSet(viewsets.ModelViewSet):
         '''
                 user 가입시 닉네임 등록
                 ---
+                (토큰 필요)
                 user가 등록된 후 닉네임을 PUT 요청을 통해
                 유저정보에 추가적으로 등록합니다.
                 성공적으로 실행되면 201 응답을 리턴하며
                 닉네임이 중복값일경우 409 응답을 리턴합니다.
+                
         ''' 
         nickname = request.data.get('nickname') 
         users = CustomUser.objects.all()
@@ -43,6 +45,7 @@ class UserViewSet(viewsets.ModelViewSet):
         '''
                 어플 실행시 최근 로그인 시간 , 상태값 갱신
                 ---
+                (토큰 필요)
                 어플 실행할떄마다 lastlogined 필드값을 현재시간으로 갱신합니다.
                 또한 유저의 활동상태를 Normal로 변경합니다.
                 성공적으로 실행되면 201 응답을 리턴합니다.
@@ -62,7 +65,8 @@ class FeedViewSet(viewsets.ModelViewSet):
     def create(self,request):
         '''
                 피드 등록 및 경험치 증가
-                --
+                (토큰 필요)
+                ---
                 피드 등록시 등록한 유저의 경험치가 1 증가되면서
                 사진, 거리, 시간등 Feed내의 필드값들이 저장됩니다.
         '''
@@ -84,6 +88,7 @@ class FeedViewSet(viewsets.ModelViewSet):
         '''
             피드 신고 (3회이상시 피드 삭제)
             ---
+            (토큰 필요)
             신고회원 id값 저장 후 신고수를 누적시킵니다.
             동일한 회원이 신고할 시 400 응답을 리턴하고
             해당 신고는 반영되지 않습니다.
@@ -91,8 +96,7 @@ class FeedViewSet(viewsets.ModelViewSet):
             피드 삭제시 202 응답을 리턴합니다.
         '''
         feed_info = self.get_object()
-        report_user = CustomUser.objects.get(id=request.user.id)
-
+        report_user = CustomUser.objects.get(id=request.user.id)  
         #중복방지
         if str(report_user.id) not in feed_info.report_uidList: 
             feed_info.report_uidList.append(report_user.id)
@@ -185,8 +189,10 @@ def rank_update(request):
     '''
             랭크 업데이트
             ---
+            (토큰 필요X)
             전체유저 순위를 정렬하여 랭크값을 갱신합니다.
             갱신이 완료되면 202 응답을 리턴합니다.
+
     '''
     user_info = CustomUser.objects.all()
     serializer = UserSerializer(user_info)
@@ -199,11 +205,12 @@ def level_update(request, *args, **kwargs):
     '''
             레벨 업데이트
             ---
+            (토큰 필요)
             유저의 경험치가 5 이상일경우 경험치/5의 몫만큼 레벨을 올립니다.
             레벨이 올라가면 경험치는 경험치/5의 나머지로 변경됩니다.
             성공적으로 갱신이 완료되면 202 응답을 리턴합니다.
     '''
-    user_info = CustomUser.objects.get(id = 9)
+    user_info = CustomUser.objects.get(id = request.user.id)
     serializer = UserSerializer(user_info)
     serializer.level_save(user_info)
     return Response(serializer.data,status = status.HTTP_202_ACCEPTED)
@@ -225,3 +232,4 @@ def quest_to_user(request):
     for quest in all_quest:
         QuestList.objects.create(uid=uid, qid=quest)
     return Response(status=status.HTTP_201_CREATED)
+

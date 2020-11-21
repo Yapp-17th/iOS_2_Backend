@@ -4,17 +4,23 @@ import datetime
 from push_notifications.models import APNSDevice
 from dateutil.relativedelta import relativedelta
 
-def check_dormant():
+def check_3days():
     users = CustomUser.objects.all()
     for user in users:
         if user.state == "N":
-            if datetime.datetime.now() >= user.lastlogined + datetime.timedelta(minutes=1):
+            if datetime.datetime.now() >= user.lastlogined + datetime.timedelta(days=3):
                 user.state = "D"
-                #push noti
                 #device = APNSDevice.objects.get(registration_id=apns_token)
                 #device.send_message("Test")
                 user.save()
 
+#def check_7days():
+    #users = CustomUser.objects.filter(state = "D")
+    #for user in users:
+        #if datetime.datetime.now() >= user.lastlogined + datetime.timedelta(days=7): 
+        #device = APNSDevice.objects.get(registration_id=apns_token)
+        #device.send_message("Test")
+        
 
 def monthly_stats():
     users = CustomUser.objects.all()

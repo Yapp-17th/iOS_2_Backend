@@ -7,11 +7,10 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 from django.conf.urls.static import static
-
+from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token, refresh_jwt_token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
     path('users/', include('users.urls')),
     path('accounts/', include('accounts.urls')),
     path('quests/', include('quests.urls')),
