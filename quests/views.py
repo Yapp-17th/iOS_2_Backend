@@ -6,4 +6,5 @@ from rest_framework import viewsets
 class QuestViewSet(viewsets.ModelViewSet):
     queryset = Quest.objects.all()
     serializer_class = QuestSerializer
-    http_method_names = ['get', 'head']
+    # 퀘스트는 CRUD 필요없음
+    http_method_names = []

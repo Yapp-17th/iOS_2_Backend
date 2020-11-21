@@ -21,9 +21,9 @@ urlpatterns = [
 # 문서화 = swagger/로 접속
 schema_view = get_schema_view(
     openapi.Info(
-        title="Snippets API",
+        title="Uniplogger API",
         default_version='v1',
-        description="Test description",
+        description="Yapp IOS2 team ʕ•ᴥ•ʔ ",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="contact@snippets.local"),
         license=openapi.License(name="BSD License"),

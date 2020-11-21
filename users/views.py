@@ -1,14 +1,10 @@
-from django.shortcuts import render
-from rest_framework import viewsets, mixins, status
+from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, action
-from PIL import Image
 from quests.models import Quest
 from .serializers import UserSerializer, FeedSerializer, QuestListSerializer, QuestListDetailSerializer
 from .models import CustomUser,Feed,QuestList
 from rest_framework.response import Response
 import datetime
-from django.db import IntegrityError
-from dateutil.relativedelta import relativedelta
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -116,6 +112,13 @@ class QuestListViewSet(viewsets.ModelViewSet):
 
     # 퀘스트 상세 설명 화면, 학습퀘스트일 경우 다음 2개 퀘스트, 목표달성일 경우 랜덤 2개 퀘스트 보여주기
     def retrieve(self, request, *args, **kwargs):
+        '''
+            퀘스트 상세 설명 화면
+            ---
+            (토큰 필요)
+            선택한 퀘스트의 정보와 학습퀘스트일 경우 다음 step 퀘스트 2개, 목표달성일 경우 랜덤 2개 퀘스트를 함께 보여줍니다.
+            more quest의 경우, 각 유저가 아직 수행하지 않은 퀘스트들을 보여주며 2개 미만일 경우 0개 또는 1개의 퀘스트를 반환할 수 있습니다.
+        '''
         instance = self.get_object()
         serializer = QuestListDetailSerializer(
             instance,
@@ -123,57 +126,65 @@ class QuestListViewSet(viewsets.ModelViewSet):
         )
         return Response(serializer.data)
 
-    # url : /users/questlist/{pk}/start_quest (퀘스트 시작 todo->doing)
+    # url : /users/questlist/{pk}/start (퀘스트 시작 todo->doing)
     @action(detail=True, methods=['get'])
     def start(self, request, pk):
+        '''
+                퀘스트 시작
+                ---
+                (토큰 필요)
+                선택한 퀘스트를 "시작" 처리합니다. (todo->doing)
+                성공적으로 실행되면 200 응답을 리턴합니다.
+        '''
         quest = self.get_object()
         quest.state = 'DOING'
         quest.save()
-        serializer = self.get_serializer(quest)
-        return Response(serializer.data)
+        return Response(status=status.HTTP_200_OK)
 
-    # url : /users/questlist/{pk}/abandon_quest (퀘스트 포기 doing->todo)
+    # url : /users/questlist/{pk}/abandon (퀘스트 포기 doing->todo)
     @action(detail=True, methods=['get'])
     def abandon(self, request, pk):
         '''
                 퀘스트 포기
                 ---
-                (토큰 필요한지 안필요한지 채워주세요~!)
-                학습퀘스트 포기는 전체포기(전체 삭제) / 목표달성퀘스트 포기는 1개포기(준비 탭으로)
-
+                (토큰 필요)
+                선택한 퀘스트가 학습퀘스트일 경우 학습퀘스트 전체 포기 (전체 삭제)
+                선택한 퀘스트가 목표달성 퀘스트일 경우 선택한 목표달성 퀘스트만 포기 (준비 탭으로)
+                성공적으로 실행되면 200 응답을 리턴합니다.
         '''
         quest = self.get_object()
         if quest.qid.category == 'T':
             # 트레이닝 퀘스트 포기는 전체 포기
             QuestList.objects.filter(uid=request.user, qid__category='T').delete()
-            return Response(status=status.HTTP_202_ACCEPTED)
+            return Response(status=status.HTTP_200_OK)
         elif quest.qid.category == 'R':
             quest.state = 'TODO'
             quest.save()
-            serializer = self.get_serializer(quest)
-            return Response(serializer.data)
+            return Response(status=status.HTTP_200_OK)
 
-    # url : /users/questlist/{pk}/delete_quest (퀘스트 삭제 done->삭제)
+    # url : /users/questlist/{pk}/delete (퀘스트 삭제 done->삭제)
     @action(detail=True, methods=['get'])
     def delete(self, request, pk):
         '''
                 퀘스트 삭제
                 ---
-                (토큰 필요한지 안필요한지 채워주세요~!)
-                완료 상태인 퀘스트는 삭제할 수 있음
+                (토큰 필요)
+                선택한 완료 상태인 퀘스트를 삭제합니다.
+                성공적으로 실행되면 200 응답을 리턴합니다.
         '''
         quest = self.get_object()
         self.perform_destroy(quest)
-        return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_200_OK)
 
-    # url : /users/questlist/{pk}/success_quest (퀘스트 완료 doing->done)
+    # url : /users/questlist/{pk}/success (퀘스트 완료 doing->done)
     @action(detail=True, methods=['get'])
     def success(self, request, pk):
         '''
                 퀘스트 완료
                 ---
                 (토큰 필요)
-                퀘스트를 완료상태로 바꾸고 유저정보 갱신 (experience += 1.5)
+                선택한 퀘스트를 "완료"상태로 바꾸고 유저정보 갱신합니다. (experience += 1.5)
+                성공적으로 실행되면 200 응답을 리턴합니다.
         '''
         quest = self.get_object()
         quest.state = 'DONE'
@@ -182,8 +193,7 @@ class QuestListViewSet(viewsets.ModelViewSet):
         quser = CustomUser.objects.get(id=request.user.id)
         quser.experience += 1.5
         quser.save()
-        serializer = self.get_serializer(quest)
-        return Response(serializer.data)
+        return Response(status=status.HTTP_200_OK)
 
 
 #랭크 업데이트 (report_feed 실행후, 새로고침 실행후 호출)
@@ -226,8 +236,9 @@ def quest_to_user(request):
             모든 quest를 user에게 할당
             ---
             (토큰 필요)
-            회원가입한 후, 모든 유저에게 퀘스트를 부여하기 위한 것
+            회원가입한 후, 유저에게 퀘스트를 부여하기 위한 것
             (user별 1번만 호출, default state:"todo")
+            성공적으로 실행되면 200 응답을 리턴합니다.
     '''
     uid = request.user
     QuestList.objects.filter(uid=uid).delete()
@@ -235,5 +246,5 @@ def quest_to_user(request):
     all_quest = Quest.objects.all()
     for quest in all_quest:
         QuestList.objects.create(uid=uid, qid=quest)
-    return Response(status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_200_OK)
 
