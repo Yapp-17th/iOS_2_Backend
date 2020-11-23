@@ -100,7 +100,7 @@ class FeedViewSet(viewsets.ModelViewSet):
             #3번째 신고면 삭제
             if len(feed_info.report_uidList) >= 3: 
                 self.perform_destroy(feed_info)
-                return Response(status = status.HTTP_202_ACCEPTED)
+            return Response(status = status.HTTP_202_ACCEPTED)
         else:
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
@@ -202,7 +202,7 @@ def rank_update(request):
     '''
             랭크 업데이트
             ---
-            (토큰 필요X)
+            (토큰 필요)
             전체유저 순위를 정렬하여 랭크값을 갱신합니다.
             갱신이 완료되면 202 응답을 리턴합니다.
 

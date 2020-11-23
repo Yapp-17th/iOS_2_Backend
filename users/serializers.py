@@ -4,11 +4,20 @@ from quests.models import Quest
 from quests.serializers import QuestSerializer
 from users.models import CustomUser,Feed,QuestList
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'email', 'nickname', 'level', 'rank', 'state', 'planet', 'weekly_stats', 'monthly_stats','experience']
     
+    def create(self, validated_data):
+        user = CustomUser(
+            email=validated_data['email'],
+            username=validated_data['username']
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
     def rank_save(self,user_info):
         rank_list = []
         #feed_count 갯수 기준으로 역순정렬
