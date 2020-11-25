@@ -20,7 +20,10 @@ class TrashcanViewSet(viewsets.ModelViewSet):
                 (토큰 필요)
                 위도, 경도, 주소명으로 쓰레기통 추가
         '''
-        self.create(request)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
         '''

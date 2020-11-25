@@ -4,11 +4,6 @@ from planets.models import Planet
 from users.models import CustomUser
 
 
-# test용
-def crontab_job():
-    Planet.objects.create()
-
-
 def create_planet():
     # 모든 유저 할당 가능한 수의 행성 생성, 유저의 status 고려해야할까?
     user_cnt = CustomUser.objects.count()

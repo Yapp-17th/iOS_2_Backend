@@ -39,7 +39,6 @@ def weekly_stats():
     startday = datetime.datetime.now() - relativedelta(weeks=1)
     endday = datetime.datetime.now()
     all_users = list(CustomUser.objects.all().values_list('id',flat=True))
-    print(all_users)
     feeds = Feed.objects.filter(date__range=[startday,endday]).values_list('uid',flat=True).distinct()
     for i in feeds:
         user = CustomUser.objects.get(id = int(i))
