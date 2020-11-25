@@ -42,8 +42,7 @@ class PlanetViewSet(viewsets.ModelViewSet):
         if user.planet:
             return Response(status=status.HTTP_403_FORBIDDEN, data="이번주 행성에 이미 참여했음.")
         # 속한 유저 수가 10보다 작으면서 id 가장 작은 행성(first)
-        # cur_planet = Planet.objects.filter(user_cnt__lt=10).first()
-        cur_planet = Planet(start_date=datetime.date.today(), end_date=datetime.date.today()+datetime.timedelta(days=4))
+        cur_planet = Planet.objects.filter(user_cnt__lt=10).first()
         if not cur_planet:
             pre_planet = Planet.objects.last()
             cur_planet = Planet(start_date=pre_planet.start_date, end_date=pre_planet.end_date)
