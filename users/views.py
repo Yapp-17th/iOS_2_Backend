@@ -104,7 +104,7 @@ class FeedViewSet(viewsets.ModelViewSet):
             신고회원 id값 저장 후 신고수를 누적시킵니다.
             동일한 회원이 신고할 시 400 응답을 리턴하고
             해당 신고는 반영되지 않습니다.
-            신고자가 3명이상이면 피드를 삭제하면서 경험치를 줄입니다. 
+            신고자가 3명이상이면 피드를 삭제하면서 경험치를 줄입니다.(음수O) 
             피드 삭제시 202 응답을 리턴합니다.
         '''
         feed_info = self.get_object()
@@ -116,7 +116,6 @@ class FeedViewSet(viewsets.ModelViewSet):
             
             #3번째 신고면 삭제
             if len(feed_info.report_uidList) >= 3: 
-                print(feed_info.uid)
                 user = CustomUser.objects.get(email = feed_info.uid)
                 user.experience -= 1
                 user.save()
