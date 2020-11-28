@@ -50,7 +50,7 @@ class UserViewSet(viewsets.ModelViewSet):
         user_info.lastlogined = datetime.datetime.now()
         user_info.state = "N"
         self.perform_update(user_info)
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(user_info,status=status.HTTP_201_CREATED)
     
 
 class FeedViewSet(viewsets.ModelViewSet):
@@ -73,6 +73,7 @@ class FeedViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+ 
     def create(self,request):
         '''
                 피드 등록 및 경험치 증가
@@ -112,13 +113,18 @@ class FeedViewSet(viewsets.ModelViewSet):
         if str(report_user.id) not in feed_info.report_uidList: 
             feed_info.report_uidList.append(report_user.id)
             self.perform_update(feed_info)
+            
             #3번째 신고면 삭제
             if len(feed_info.report_uidList) >= 3: 
+                print(feed_info.uid)
+                user = CustomUser.objects.get(email = feed_info.uid)
+                user.experience -= 1
+                user.save()
                 self.perform_destroy(feed_info)
             return Response(status = status.HTTP_202_ACCEPTED)
         else:
             return Response(status = status.HTTP_400_BAD_REQUEST)
-
+        
 
 class QuestListViewSet(viewsets.ModelViewSet):
     queryset = QuestList.objects.all()
