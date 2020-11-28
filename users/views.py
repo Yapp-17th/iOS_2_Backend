@@ -130,8 +130,13 @@ class QuestListViewSet(viewsets.ModelViewSet):
     serializer_class = QuestListSerializer
     http_method_names = ['get', 'head']
 
+    def list(self, request, *args, **kwargs):
+        queryset = QuestList.objects.filter(uid=request.user)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
     # 퀘스트 상세 설명 화면, 학습퀘스트일 경우 다음 2개 퀘스트, 목표달성일 경우 랜덤 2개 퀘스트 보여주기
-    def retrieve(self, request, *args, **kwargs):
+    def retrieve(self, request, pk):
         '''
             퀘스트 상세 설명 화면
             ---
@@ -139,7 +144,7 @@ class QuestListViewSet(viewsets.ModelViewSet):
             선택한 퀘스트의 정보와 학습퀘스트일 경우 다음 step 퀘스트 2개, 목표달성일 경우 랜덤 2개 퀘스트를 함께 보여줍니다.
             more quest의 경우, 각 유저가 아직 수행하지 않은 퀘스트들을 보여주며 2개 미만일 경우 0개 또는 1개의 퀘스트를 반환할 수 있습니다.
         '''
-        instance = self.get_object()
+        instance = QuestList.objects.get(uid=request.user, qid_id=pk)
         serializer = QuestListDetailSerializer(
             instance,
             context={'user_id': request.user.id}
@@ -156,7 +161,7 @@ class QuestListViewSet(viewsets.ModelViewSet):
                 선택한 퀘스트를 "시작" 처리합니다. (todo->doing)
                 성공적으로 실행되면 200 응답을 리턴합니다.
         '''
-        quest = self.get_object()
+        quest = QuestList.objects.get(uid=request.user, qid_id=pk)
         quest.state = 'DOING'
         quest.save()
         return Response(status=status.HTTP_200_OK)
@@ -172,7 +177,7 @@ class QuestListViewSet(viewsets.ModelViewSet):
                 선택한 퀘스트가 목표달성 퀘스트일 경우 선택한 목표달성 퀘스트만 포기 (준비 탭으로)
                 성공적으로 실행되면 200 응답을 리턴합니다.
         '''
-        quest = self.get_object()
+        quest = QuestList.objects.get(uid=request.user, qid_id=pk)
         if quest.qid.category == 'T':
             # 트레이닝 퀘스트 포기는 전체 포기
             QuestList.objects.filter(uid=request.user, qid__category='T').delete()
@@ -192,7 +197,7 @@ class QuestListViewSet(viewsets.ModelViewSet):
                 선택한 완료 상태인 퀘스트를 삭제합니다.
                 성공적으로 실행되면 200 응답을 리턴합니다.
         '''
-        quest = self.get_object()
+        quest = QuestList.objects.get(uid=request.user, qid_id=pk)
         self.perform_destroy(quest)
         return Response(status=status.HTTP_200_OK)
 
@@ -206,7 +211,7 @@ class QuestListViewSet(viewsets.ModelViewSet):
                 선택한 퀘스트를 "완료"상태로 바꾸고 유저정보 갱신합니다. (experience += 1.5)
                 성공적으로 실행되면 200 응답을 리턴합니다.
         '''
-        quest = self.get_object()
+        quest = QuestList.objects.get(uid=request.user, qid_id=pk)
         quest.state = 'DONE'
         quest.save()
         # 유저 경험치 +1.5
