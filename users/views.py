@@ -130,6 +130,11 @@ class QuestListViewSet(viewsets.ModelViewSet):
     serializer_class = QuestListSerializer
     http_method_names = ['get', 'head']
 
+    def list(self, request, *args, **kwargs):
+        queryset = QuestList.objects.filter(uid=request.user)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
     # 퀘스트 상세 설명 화면, 학습퀘스트일 경우 다음 2개 퀘스트, 목표달성일 경우 랜덤 2개 퀘스트 보여주기
     def retrieve(self, request, *args, **kwargs):
         '''
