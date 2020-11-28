@@ -7,7 +7,7 @@ from users.models import CustomUser,Feed,QuestList
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'nickname', 'level', 'rank', 'state', 'planet', 'weekly_stats', 'monthly_stats','experience']
+        fields = ['id', 'email', 'nickname', 'level', 'rank', 'state', 'planet', 'weekly_stats', 'monthly_stats']
     
     def create(self, validated_data):
         user = CustomUser(
