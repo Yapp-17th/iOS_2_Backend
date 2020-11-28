@@ -53,12 +53,26 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_201_CREATED)
     
 
-
 class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
     http_method_names = ['get','post','head']
 
+    def list(self,request):
+        '''
+                피드 리스트 출력
+                (토큰 필요)
+                ---
+                request 한 유저가 작성한 피드를 보여줍니다.
+        '''
+        queryset = Feed.objects.filter(uid=request.user.id)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
     def create(self,request):
         '''
                 피드 등록 및 경험치 증가

@@ -22,9 +22,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         rank_list = []
         #feed_count 갯수 기준으로 역순정렬
         for user in user_info:
-            uid = user.id
-            feed_count = len(Feed.objects.filter(uid=uid))
-            rank_list.append([feed_count,uid])
+            feed_count = len(Feed.objects.filter(uid=user.id))
+            rank_list.append([feed_count,user.id])
         rank_list = sorted(rank_list, key = lambda x : -x[0])
         user_idx = 0
         for rank in range(1,len(rank_list)+1):
