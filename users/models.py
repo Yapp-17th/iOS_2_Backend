@@ -65,12 +65,6 @@ class CustomUser(AbstractUser):
             feeds = feeds.filter(date__range=[planet.start_date, planet.end_date])
         return feeds.aggregate(Sum('time'))["time__sum"] or 0
 
-    def get_distance_for_level(self):
-        feeds = Feed.objects.filter(uid=1)
-        startday = datetime.datetime.now() - relativedelta(weekday=1)
-        endday =  datetime.datetime.now()
-        feeds = feeds.filter(date__range=[startday,endday])
-        return feeds.aggregate(Sum('distance'))["distance__sum"] or 0
 
 class Feed(Model):
     uid = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
