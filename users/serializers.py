@@ -26,16 +26,14 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             feed_count = len(Feed.objects.filter(uid=uid))
             rank_list.append([feed_count,uid])
         rank_list = sorted(rank_list, key = lambda x : -x[0])
-        #feed_count를 rank값으로 변경 후 uid기준으로 정렬 
         user_idx = 0
         for rank in range(1,len(rank_list)+1):
             rank_list[user_idx][0] = rank
             user_idx+=1
-        rank_list = sorted(rank_list, key = lambda x : x[1])
         for i in rank_list:
             user = CustomUser.objects.get(id = i[1])
             total = CustomUser.objects.all().count()
-            user.rank = round(i[0] / total * 100,1)
+            user.rank = int(i[0] / total * 100)
             user.save()
     
     def level_save(self,user_info):
@@ -63,7 +61,7 @@ class FeedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
         fields = '__all__'
-
+    
 
 class QuestListSerializer(serializers.ModelSerializer):
     class Meta:

@@ -25,7 +25,7 @@ class CustomUser(AbstractUser):
 
 
     level = models.IntegerField(default=1)
-    rank = models.FloatField(default=0.0)
+    rank = models.IntegerField(default=0)
 
     report_user_cnt = models.IntegerField(default=0)     # 유저의 신고당한 횟수
 
