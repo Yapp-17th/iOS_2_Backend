@@ -1,8 +1,16 @@
 from rest_framework import serializers
 
+from planets.models import Planet
 from quests.models import Quest
 from quests.serializers import QuestSerializer
 from users.models import CustomUser,Feed,QuestList
+
+
+class PlanetSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Planet
+        fields = '__all__'
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -40,6 +48,11 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             user_info.level += user_info.experience // 5
             user_info.experience = user_info.experience % 5
             user_info.save()
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['planet'] = PlanetSimpleSerializer(instance.planet).data
+        return response
 
 
 # 챌린지(행성)에서만 보여줄 user 정보(planet_score) 추가한 serializer 따로 정의
