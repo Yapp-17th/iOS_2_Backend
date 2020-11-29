@@ -51,7 +51,11 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['planet'] = PlanetSimpleSerializer(instance.planet).data
+        if instance.planet:
+            response['planet'] = PlanetSimpleSerializer(instance.planet).data
+        else:
+            # planet 참여하지 않은 경우 null return
+            response['planet'] = None
         return response
 
 
