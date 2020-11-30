@@ -123,6 +123,20 @@ class FeedViewSet(viewsets.ModelViewSet):
             return Response(status = status.HTTP_202_ACCEPTED)
         else:
             return Response(status = status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=False, methods=['post'],url_path='others_feed', url_name='others_feed')
+    def others_feed(self,request):
+        '''
+                    타 유저 피드 리스트 출력
+                    (토큰 필요)
+                    ---
+                    id값을 json 으로 보내면 해당 id값을 가진 유저의 피드를 보여줍니다.
+        '''
+        serializer = self.get_serializer(data=request.data)
+        queryset = Feed.objects.filter(uid=request.data.get("id"))
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
         
 
 class QuestListViewSet(viewsets.ModelViewSet):
@@ -273,3 +287,20 @@ def quest_to_user(request):
         QuestList.objects.create(uid=uid, qid=quest)
     return Response(status=status.HTTP_200_OK)
 
+
+@api_view(['POST'])
+def see_others_feed(request,self):
+    '''
+                피드 리스트 출력
+                (토큰 필요)
+                ---
+                request 한 유저가 작성한 피드를 보여줍니다.
+    '''
+    print(request.data)
+    queryset = Feed.objects.filter(uid=request.data.get("id"))
+    page = self.paginate_queryset(queryset)
+    if page is not None:
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+    serializer = self.get_serializer(queryset, many=True)
+    return Response(serializer.data)
