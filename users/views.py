@@ -136,7 +136,6 @@ class FeedViewSet(viewsets.ModelViewSet):
         queryset = Feed.objects.filter(uid=request.data.get("id"))
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-
         
 
 class QuestListViewSet(viewsets.ModelViewSet):

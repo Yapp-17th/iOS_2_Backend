@@ -27,8 +27,6 @@ class CustomUser(AbstractUser):
     level = models.IntegerField(default=1)
     rank = models.IntegerField(default=0)
 
-    report_user_cnt = models.IntegerField(default=0)     # 유저의 신고당한 횟수
-
     planet = models.ForeignKey(Planet, related_name='players', on_delete=models.SET_NULL, null=True)
     STATE = (
         ('N', 'Normal'),
@@ -73,7 +71,6 @@ class Feed(Model):
     distance = models.FloatField()  # "XX.XX"km단위
     time = models.IntegerField()    # "분"단위
     photo = ResizedImageField(size=[300,300],upload_to='',force_format='JPEG',quality=95)
-    report_feed_cnt = models.IntegerField(default=0)     # 게시물의 신고당한 횟수
     report_uidList = ListCharField(
         base_field=CharField(max_length=10),
         size=6,
