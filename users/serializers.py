@@ -78,6 +78,11 @@ class FeedSerializer(serializers.ModelSerializer):
         model = Feed
         fields = '__all__'
     
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['user'] = UserSerializer(instance.uid).data
+        return response
+    
 
 class QuestListSerializer(serializers.ModelSerializer):
     class Meta:
