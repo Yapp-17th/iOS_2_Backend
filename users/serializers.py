@@ -11,7 +11,6 @@ class PlanetSimpleSerializer(serializers.ModelSerializer):
         model = Planet
         fields = '__all__'
 
-
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CustomUser
@@ -58,6 +57,10 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             response['planet'] = None
         return response
 
+class UserjoinSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['weekly_stats','monthly_stats','level','rank']
 
 # 챌린지(행성)에서만 보여줄 user 정보(planet_score) 추가한 serializer 따로 정의
 class PlayerSerializer(serializers.ModelSerializer):
@@ -80,7 +83,7 @@ class FeedSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['user'] = UserSerializer(instance.uid).data
+        response['user'] = UserjoinSerializer(instance.uid).data
         return response
     
 
