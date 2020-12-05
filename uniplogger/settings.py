@@ -229,3 +229,5 @@ PUSH_NOTIFICATIONS_SETTINGS = {
     #"APNS_USE_ALTERNATIVE_PORT": 443 대신 포트 2197 사용
     #"APNS_USE_SANDBOX" : api.push.apple.com 대신 api.development.push.apple.com 사용
 }
+
+UPDATE_ON_DUPLICATE_REG_ID = True
