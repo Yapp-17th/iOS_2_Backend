@@ -9,6 +9,8 @@ def create_planet():
     user_cnt = CustomUser.objects.count()
     for _ in range(ceil(user_cnt / 10)):
         Planet.objects.create()
+        #device = APNSDevice.objects.get(registration_id=apns_token)
+        #device.send_message(message = {"title" : "행성생성","body" : "참여하세요!"})
 
 
 def delete_planet():

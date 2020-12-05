@@ -12,7 +12,7 @@ Feed_router.register('', views.FeedViewSet)
 Questlist_router = routers.DefaultRouter()
 Questlist_router.register('', views.QuestListViewSet) 
 push_router = routers.DefaultRouter()
-push_router.register(r'device/apns', APNSDeviceAuthorizedViewSet)
+push_router.register('', APNSDeviceAuthorizedViewSet)
 
 urlpatterns = [
     path('', include('rest_auth.urls')),    # login/, logout/, ...
