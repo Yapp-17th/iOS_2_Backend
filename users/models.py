@@ -19,8 +19,8 @@ class CustomUser(AbstractUser):
 
     objects = CustomUserManager()
 
-    registeredDate = models.DateTimeField(auto_now_add=True)
-    lastlogined = models.DateTimeField(auto_now=True)
+    registeredDate = models.DateField(auto_now_add=True)
+    lastlogined = models.DateField(auto_now=True)
     nickname = models.CharField(max_length=12)
 
 
@@ -67,7 +67,7 @@ class CustomUser(AbstractUser):
 class Feed(Model):
     uid = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     title = models.CharField(max_length=300)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
     distance = models.FloatField()  # "XX.XX"km단위
     time = models.IntegerField()    # "분"단위
     photo = ResizedImageField(size=[300,300],upload_to='',force_format='JPEG',quality=95)
