@@ -13,6 +13,7 @@ def create_planet():
         #device.send_message(message = {"title" : "행성생성","body" : "참여하세요!"})
 
 
+
 def delete_planet():
     queryset = Planet.objects.all()
     queryset.delete()
