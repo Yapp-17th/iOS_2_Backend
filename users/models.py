@@ -25,7 +25,7 @@ class CustomUser(AbstractUser):
 
 
     level = models.IntegerField(default=1)
-    rank = models.IntegerField(default=0)
+    rank = models.IntegerField(default=100)
 
     planet = models.ForeignKey(Planet, related_name='players', on_delete=models.SET_NULL, null=True)
     STATE = (
