@@ -5,6 +5,7 @@ from quests.models import Quest
 from quests.serializers import QuestSerializer
 from users.models import CustomUser,Feed,QuestList
 from rest_auth.registration.serializers import RegisterSerializer
+from django.http import HttpResponse, JsonResponse
 
 class PlanetSimpleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -136,7 +137,7 @@ class QuestListDetailSerializer(serializers.ModelSerializer):
 class RegisterSerializer(RegisterSerializer):
     nickname = serializers.CharField(required=False, write_only=True)
     def get_cleaned_data(self):
-        print(self.validated_data.get('nickname', ''))
+        users = CustomUser.objects.all()
         return {
             'password1': self.validated_data.get('password1', ''),
             'password2': self.validated_data.get('password2', ''),
@@ -150,5 +151,9 @@ class RegisterSerializer(RegisterSerializer):
     def save(self, request):
         res = super(RegisterSerializer, self).save(request)
         res.nickname = self.validated_data.get('nickname', '')
-        print(res)
+        users = CustomUser.objects.all()
+        for user in users:
+            if user.nickname == self.validated_data.get('nickname', ''):
+                raise serializers.ValidationError({'msgType':'error','message':'duplicate nickname'})
+        res.save()
         return res
