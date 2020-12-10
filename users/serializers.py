@@ -4,7 +4,7 @@ from planets.models import Planet
 from quests.models import Quest
 from quests.serializers import QuestSerializer
 from users.models import CustomUser,Feed,QuestList
-
+from rest_auth.registration.serializers import RegisterSerializer
 
 class PlanetSimpleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -131,3 +131,24 @@ class QuestListDetailSerializer(serializers.ModelSerializer):
         response = super().to_representation(instance)
         response['qid'] = QuestSerializer(instance.qid).data
         return response
+
+
+class RegisterSerializer(RegisterSerializer):
+    nickname = serializers.CharField(required=False, write_only=True)
+    def get_cleaned_data(self):
+        print(self.validated_data.get('nickname', ''))
+        return {
+            'password1': self.validated_data.get('password1', ''),
+            'password2': self.validated_data.get('password2', ''),
+            'email': self.validated_data.get('email', ''),
+            'nickname': self.validated_data.get('nickname', ''),
+        }
+
+    def validate_nickname(self, nickname):
+        return nickname
+
+    def save(self, request):
+        res = super(RegisterSerializer, self).save(request)
+        res.nickname = self.validated_data.get('nickname', '')
+        print(res)
+        return res

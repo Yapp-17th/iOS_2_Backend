@@ -6,7 +6,6 @@ from .models import CustomUser,Feed,QuestList
 from rest_framework.response import Response
 import datetime
 
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
