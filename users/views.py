@@ -24,6 +24,8 @@ class UserViewSet(viewsets.ModelViewSet):
                 
         ''' 
         nickname = request.data.get('nickname') 
+        if nickname == "":
+            return Response(status=status.HTTP_409_CONFLICT)
         users = CustomUser.objects.all()
         for user in users:
             if user.nickname == nickname:
