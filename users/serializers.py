@@ -1,16 +1,21 @@
+from django.contrib.auth.forms import PasswordResetForm
+from pylint.checkers.typecheck import _
 from rest_framework import serializers
 
 from planets.models import Planet
 from quests.models import Quest
 from quests.serializers import QuestSerializer
+from uniplogger import settings
 from users.models import CustomUser,Feed,QuestList
 from rest_auth.registration.serializers import RegisterSerializer
 from django.http import HttpResponse, JsonResponse
+
 
 class PlanetSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Planet
         fields = '__all__'
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -158,3 +163,33 @@ class RegisterSerializer(RegisterSerializer):
         
         res.save()
         return res
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    """
+       Serializer for requesting a password reset e-mail.
+    """
+    email = serializers.EmailField()
+    password_reset_form_class = PasswordResetForm
+
+    def validate_email(self, value):
+        # Create PasswordResetForm with the serializer
+        self.reset_form = self.password_reset_form_class(data=self.initial_data)
+        if not self.reset_form.is_valid():
+            raise serializers.ValidationError(_('Error'))
+
+        if not CustomUser.objects.filter(email=value).exists():
+            raise serializers.ValidationError(_('Invalid e-mail address'))
+
+        return value
+
+    def save(self):
+        request = self.context.get('request')
+        # Set some values to trigger the send_email method.
+        opts = {
+            'use_https': request.is_secure(),
+            'from_email': getattr(settings, 'DEFAULT_FROM_EMAIL'),
+            'email_template_name': 'pw_reset_email.html',
+            'request': request,
+        }
+        self.reset_form.save(**opts)
