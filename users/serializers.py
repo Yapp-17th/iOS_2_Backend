@@ -149,11 +149,12 @@ class RegisterSerializer(RegisterSerializer):
         return nickname
 
     def save(self, request):
-        res = super(RegisterSerializer, self).save(request)
-        res.nickname = self.validated_data.get('nickname', '')
         users = CustomUser.objects.all()
         for user in users:
             if user.nickname == self.validated_data.get('nickname', ''):
                 raise serializers.ValidationError({'msgType':'error','message':'duplicate nickname'})
+        res = super(RegisterSerializer, self).save(request)
+        res.nickname = self.validated_data.get('nickname', '')
+        
         res.save()
         return res
