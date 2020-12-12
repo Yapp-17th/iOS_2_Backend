@@ -33,7 +33,7 @@ class UserViewSet(viewsets.ModelViewSet):
         user_info  = self.get_object()
         user_info.nickname = nickname 
         self.perform_update(user_info) 
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(user_info,status=status.HTTP_201_CREATED)
         
 
     #lastlogined 갱신(앱실행시 호출)
