@@ -1,16 +1,22 @@
+from django.contrib.auth.forms import PasswordResetForm
+from pylint.checkers.typecheck import _
+from rest_auth.serializers import PasswordResetSerializer
 from rest_framework import serializers
 
 from planets.models import Planet
 from quests.models import Quest
 from quests.serializers import QuestSerializer
+from uniplogger import settings
 from users.models import CustomUser,Feed,QuestList
 from rest_auth.registration.serializers import RegisterSerializer
 from django.http import HttpResponse, JsonResponse
+
 
 class PlanetSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Planet
         fields = '__all__'
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -158,3 +164,11 @@ class RegisterSerializer(RegisterSerializer):
         
         res.save()
         return res
+
+
+class CustomPasswordResetSerializer(PasswordResetSerializer):
+
+    def get_email_options(self):
+        return {
+            'email_template_name': 'pw_reset_email.html',
+        }
