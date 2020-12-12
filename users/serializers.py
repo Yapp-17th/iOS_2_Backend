@@ -164,7 +164,13 @@ class RegisterSerializer(RegisterSerializer):
 
 class CustomPasswordResetSerializer(PasswordResetSerializer):
 
+    # uniplogger://resetPassword?uid=&token=
     def get_email_options(self):
         return {
-            'email_template_name': 'pw_reset_email.html',
+            'subject_template_name': 'registration/password_reset_subject.txt',
+            'html_email_template_name': 'registration/password_reset_message.html',
+            # 'email_template_name': 'pw_reset_email.html',
+            'extra_email_context': {
+                'frontend_url': 'uniplogger://resetPassword'
+            }
         }

@@ -5,6 +5,7 @@ from .serializers import UserSerializer, FeedSerializer, QuestListSerializer, Qu
 from .models import CustomUser,Feed,QuestList
 from rest_framework.response import Response
 import datetime
+import requests
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -313,3 +314,12 @@ def see_others_feed(request,self):
         return self.get_paginated_response(serializer.data)
     serializer = self.get_serializer(queryset, many=True)
     return Response(serializer.data)
+
+
+# def resetPassword(request, uidb64, token):
+#     r_params = {
+#         "uidb64": uidb64,
+#         "token": token
+#     }
+#     r = requests.get('"uniplogger://resetPassword"', params=r_params)
+#     return r
