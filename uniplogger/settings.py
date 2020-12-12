@@ -103,7 +103,7 @@ JWT_AUTH = {
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'users.serializers.UserSerializer',
-    'PASSWORD_RESET_SERIALIZER': 'users.serializers.PasswordResetSerializer',
+    'PASSWORD_RESET_SERIALIZER': 'users.serializers.CustomPasswordResetSerializer',
 }
 
 MIDDLEWARE = [
