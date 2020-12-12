@@ -57,7 +57,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
-    http_method_names = ['get','post','head']
+    http_method_names = ['get','post','delete','head']
 
     def list(self,request):
         '''
@@ -95,6 +95,14 @@ class FeedViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        user = CustomUser.objects.get(id=instance.uid.id)
+        user.experience -= 1
+        user.save()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)    
     
     #신고기능_피드
     @action(detail=True, methods=['get'])
