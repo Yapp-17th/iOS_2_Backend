@@ -5,6 +5,7 @@ from .serializers import UserSerializer, FeedSerializer, QuestListSerializer, Qu
 from .models import CustomUser,Feed,QuestList
 from rest_framework.response import Response
 import datetime
+import requests
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -84,8 +85,11 @@ class FeedViewSet(viewsets.ModelViewSet):
                 피드 등록시 등록한 유저의 경험치가 1 증가되면서
                 사진, 거리, 시간등 Feed내의 필드값들이 저장됩니다.
         '''
+        #if ValueError:
+        #    data = 'ValueError'
+        #    return Response(data,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
         serializer = self.get_serializer(data=request.data)
-        print(request.data)
         #피드 등록시 경험치 1증가
         user = CustomUser.objects.get(id=request.data.get(
             'uid',''
@@ -315,3 +319,12 @@ def see_others_feed(request,self):
         return self.get_paginated_response(serializer.data)
     serializer = self.get_serializer(queryset, many=True)
     return Response(serializer.data)
+
+
+# def resetPassword(request, uidb64, token):
+#     r_params = {
+#         "uidb64": uidb64,
+#         "token": token
+#     }
+#     r = requests.get('"uniplogger://resetPassword"', params=r_params)
+#     return r

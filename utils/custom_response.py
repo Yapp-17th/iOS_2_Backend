@@ -24,19 +24,27 @@ class ResponseFormattingMiddleware:
                 'data': {},
                 'message': None
             }
-
+                
             if hasattr(response, 'data') and getattr(response, 'data') is not None:
                 data = response.data
-                if is_client_error(response.status_code):
+
+                if data == 'ValueError':
                     response_format['data'] = None
-                    response_format['message'] = data
+                    response_format['message'] = "field error"
+                
+                elif is_client_error(response.status_code):
+                    response_format['data'] = None
+                    response_format['message'] = data["detail"]
+                    
                 else:
+                    print("/")
                     response_format['data'] = data
                     response_format['message'] = "success"
+                
 
                 response.data = response_format
                 response.content = response.render().rendered_content
             else:
                 response.data = response_format
 
-        return response 
+        return response
