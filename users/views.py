@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, action
 from quests.models import Quest
+from planets.models import Planet
 from .serializers import UserSerializer, FeedSerializer, QuestListSerializer, QuestListDetailSerializer
 from .models import CustomUser,Feed,QuestList
 from rest_framework.response import Response
@@ -12,29 +13,45 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     http_method_names = ['get','put','delete','head'] 
     
-    def update(self, request, *args, **kwargs):
+    # def update(self, request, *args, **kwargs):
+    #     '''
+    #             user 가입시 닉네임 등록
+    #             ---
+    #             (토큰 필요)
+    #             user가 등록된 후 닉네임을 PUT 요청을 통해
+    #             유저정보에 추가적으로 등록합니다.
+    #             성공적으로 실행되면 201 응답을 리턴하며
+    #             닉네임이 중복값일경우 409 응답을 리턴합니다.
+    #
+    #     '''
+    #     nickname = request.data.get('nickname')
+    #     if nickname == "":
+    #         return Response(status=status.HTTP_409_CONFLICT)
+    #     users = CustomUser.objects.all()
+    #     for user in users:
+    #         if user.nickname == nickname:
+    #             return Response(status=status.HTTP_409_CONFLICT)
+    #
+    #     user_info  = self.get_object()
+    #     user_info.nickname = nickname
+    #     self.perform_update(user_info)
+    #     return Response(user_info,status=status.HTTP_201_CREATED)
+
+    def destroy(self, request, *args, **kwargs):
         '''
-                user 가입시 닉네임 등록
+                탈퇴하기
                 ---
                 (토큰 필요)
-                user가 등록된 후 닉네임을 PUT 요청을 통해
-                유저정보에 추가적으로 등록합니다.
-                성공적으로 실행되면 201 응답을 리턴하며
-                닉네임이 중복값일경우 409 응답을 리턴합니다.
-                
-        ''' 
-        nickname = request.data.get('nickname') 
-        if nickname == "":
-            return Response(status=status.HTTP_409_CONFLICT)
-        users = CustomUser.objects.all()
-        for user in users:
-            if user.nickname == nickname:
-                return Response(status=status.HTTP_409_CONFLICT)
- 
-        user_info  = self.get_object()
-        user_info.nickname = nickname 
-        self.perform_update(user_info) 
-        return Response(user_info,status=status.HTTP_201_CREATED)
+                유저 정보가 사라지고 유저와 관련된 데이터들이 삭제됩니다.
+        '''
+        user_info = self.get_object()
+        if user_info.planet:
+            my_planet = Planet.objects.get(id=user_info.planet.id)
+            my_planet.user_cnt -= 1
+            my_planet.save()
+
+        self.perform_destroy(user_info)
+        return Response(status=status.HTTP_202_ACCEPTED)
         
 
     #lastlogined 갱신(앱실행시 호출)
