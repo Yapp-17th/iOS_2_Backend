@@ -17,26 +17,28 @@ class ResponseFormattingMiddleware:
         return response
 
     def process_response(self, request, response):
-        if request.method in self.METHOD:
-            # response 형식
-            response_format = {
-                'success': is_success(response.status_code),
-                'data': {},
-                'message': None
-            }
+        path_info = request.META["PATH_INFO"]
+        if path_info != '/swagger/' and path_info != '/redoc/':
+            if request.method in self.METHOD:
+                # response 형식
+                response_format = {
+                    'success': is_success(response.status_code),
+                    'data': {},
+                    'message': None
+                }
 
-            if hasattr(response, 'data') and getattr(response, 'data') is not None:
-                data = response.data
-                if is_client_error(response.status_code):
-                    response_format['data'] = None
-                    response_format['message'] = data["detail"]
+                if hasattr(response, 'data') and getattr(response, 'data') is not None:
+                    data = response.data
+                    if is_client_error(response.status_code):
+                        response_format['data'] = None
+                        response_format['message'] = data["detail"]
+                    else:
+                        response_format['data'] = data
+                        response_format['message'] = "success"
+
+                    response.data = response_format
+                    response.content = response.render().rendered_content
                 else:
-                    response_format['data'] = data
-                    response_format['message'] = "success"
-
-                response.data = response_format
-                response.content = response.render().rendered_content
-            else:
-                response.data = response_format
+                    response.data = response_format
 
         return response
