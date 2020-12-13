@@ -1,3 +1,4 @@
+
 from django.contrib.auth.forms import PasswordResetForm
 from rest_auth.serializers import PasswordResetSerializer
 from rest_framework import serializers
@@ -5,10 +6,8 @@ from rest_framework import serializers
 from planets.models import Planet
 from quests.models import Quest
 from quests.serializers import QuestSerializer
-from uniplogger import settings
 from users.models import CustomUser,Feed,QuestList
 from rest_auth.registration.serializers import RegisterSerializer
-from django.http import HttpResponse, JsonResponse
 
 
 class PlanetSimpleSerializer(serializers.ModelSerializer):
@@ -167,7 +166,13 @@ class RegisterSerializer(RegisterSerializer):
 
 class CustomPasswordResetSerializer(PasswordResetSerializer):
 
+    # uniplogger://resetPassword?uid=&token=
     def get_email_options(self):
         return {
-            'email_template_name': 'pw_reset_email.html',
+            'subject_template_name': 'registration/password_reset_subject.txt',
+            'html_email_template_name': 'registration/password_reset_message.html',
+            # 'email_template_name': 'pw_reset_email.html',
+            'extra_email_context': {
+                'frontend_url': 'uniplogger://resetPassword'
+            }
         }
