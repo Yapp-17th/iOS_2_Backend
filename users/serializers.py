@@ -1,5 +1,4 @@
 from django.contrib.auth.forms import PasswordResetForm
-from pylint.checkers.typecheck import _
 from rest_auth.serializers import PasswordResetSerializer
 from rest_framework import serializers
 

@@ -84,6 +84,10 @@ class FeedViewSet(viewsets.ModelViewSet):
                 피드 등록시 등록한 유저의 경험치가 1 증가되면서
                 사진, 거리, 시간등 Feed내의 필드값들이 저장됩니다.
         '''
+        #if ValueError:
+        #    data = 'ValueError'
+        #    return Response(data,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
         serializer = self.get_serializer(data=request.data)
         #피드 등록시 경험치 1증가
         user = CustomUser.objects.get(id=request.data.get(
@@ -96,6 +100,7 @@ class FeedViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+#ERROR FORMAT 처리 필요
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         user = CustomUser.objects.get(id=instance.uid.id)
