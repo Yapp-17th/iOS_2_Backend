@@ -69,7 +69,7 @@ class Feed(Model):
     title = models.CharField(max_length=300)
     date = models.DateField(auto_now_add=True)
     distance = models.FloatField()  # "XX.XX"km단위
-    time = models.IntegerField()    # "분"단위
+    time = models.IntegerField()    # "초"단위
     photo = models.ImageField()
     #photo = ResizedImageField(size=[2000,2000],upload_to='',force_format='JPEG',quality=100)
     report_uidList = ListCharField(

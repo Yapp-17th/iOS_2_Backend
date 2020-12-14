@@ -77,7 +77,7 @@ class PlayerSerializer(serializers.ModelSerializer):
     def get_planet_score(self, instance):
         return instance.get_feed_cnt(instance.planet) * 1000 \
                + instance.get_distance(instance.planet) * 100 \
-               + instance.get_time(instance.planet)
+               + instance.get_time(instance.planet) // 60
 
 
 class FeedSerializer(serializers.ModelSerializer):
