@@ -6,12 +6,12 @@ from .serializers import UserSerializer, FeedSerializer, QuestListSerializer, Qu
 from .models import CustomUser,Feed,QuestList
 from rest_framework.response import Response
 import datetime
-import requests
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-    http_method_names = ['get','put','delete','head'] 
+    http_method_names = ['get','delete','head']
     
     # def update(self, request, *args, **kwargs):
     #     '''
@@ -87,7 +87,6 @@ class FeedViewSet(viewsets.ModelViewSet):
         queryset = Feed.objects.filter(uid=request.user.id)
         page = self.paginate_queryset(queryset)
         if page is not None:
-            print(user.email)
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
@@ -289,13 +288,16 @@ def level_update(request, *args, **kwargs):
             레벨이 올라가면 경험치는 경험치/5의 나머지로 변경됩니다.
             성공적으로 갱신이 완료되면 202 응답을 리턴합니다.
     '''
+    serializer_context = {
+        'request': request,
+    }
     user_info = CustomUser.objects.get(id = request.user.id)
-    serializer = UserSerializer(user_info)
+    serializer = UserSerializer(user_info, context=serializer_context)
     serializer.level_save(user_info)
     return Response(serializer.data,status = status.HTTP_202_ACCEPTED)
 
 
-# 모든 quest를 유저에 할당 (유저별 1번만 호출, questlist에 "todo"인 상태로) ----------> 어느 타이밍에 할 것인지 아직..?
+# 모든 quest를 유저에 할당 (유저별 1번만 호출, questlist에 "todo"인 상태로)
 @api_view(['GET'])
 def quest_to_user(request):
     '''
@@ -323,7 +325,6 @@ def see_others_feed(request,self):
                 ---
                 request 한 유저가 작성한 피드를 보여줍니다.
     '''
-    print(request.data)
     queryset = Feed.objects.filter(uid=request.data.get("id"))
     page = self.paginate_queryset(queryset)
     if page is not None:
@@ -331,12 +332,3 @@ def see_others_feed(request,self):
         return self.get_paginated_response(serializer.data)
     serializer = self.get_serializer(queryset, many=True)
     return Response(serializer.data)
-
-
-# def resetPassword(request, uidb64, token):
-#     r_params = {
-#         "uidb64": uidb64,
-#         "token": token
-#     }
-#     r = requests.get('"uniplogger://resetPassword"', params=r_params)
-#     return r

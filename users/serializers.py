@@ -39,7 +39,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         for rank in range(1,len(rank_list)+1):
             rank_list[user_idx][0] = rank
             user_idx+=1
-        print(rank_list)
         for i in rank_list:
             user = CustomUser.objects.get(id = i[1])
             total = CustomUser.objects.all().count()
