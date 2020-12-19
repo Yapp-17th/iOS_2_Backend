@@ -35,17 +35,17 @@ class ResponseFormattingMiddleware:
                         if "detail" in data:
                             response_format['message'] = data["detail"]
                         elif "email" in data:
-                            response_format['message'] = data["email"]
+                            response_format['message'] = data["email"][0]
                         elif "non_field_errors" in data:
-                            response_format['message'] = data["non_field_errors"]
+                            response_format['message'] = data["non_field_errors"][0]
                         elif "password" in data:
-                            response_format['message'] = data["password"]
+                            response_format['message'] = data["password"][0]
                         elif "password1" in data:
-                            response_format['message'] = data["password1"]
+                            response_format['message'] = data["password1"][0]
                         elif "password2" in data:
-                            response_format['message'] = data["password2"]
+                            response_format['message'] = data["password2"][0]
                         elif "nickname" in data:
-                            response_format['message'] = data["nickname"]
+                            response_format['message'] = data["nickname"][0]
                         else:
                             response_format['message'] = data
                     # success
