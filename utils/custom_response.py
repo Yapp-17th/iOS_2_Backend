@@ -29,12 +29,26 @@ class ResponseFormattingMiddleware:
 
                 if hasattr(response, 'data') and getattr(response, 'data') is not None:
                     data = response.data
+                    # error
                     if is_client_error(response.status_code):
                         response_format['data'] = None
                         if "detail" in data:
                             response_format['message'] = data["detail"]
+                        elif "email" in data:
+                            response_format['message'] = data["email"]
+                        elif "non_field_errors" in data:
+                            response_format['message'] = data["non_field_errors"]
+                        elif "password" in data:
+                            response_format['message'] = data["password"]
+                        elif "password1" in data:
+                            response_format['message'] = data["password1"]
+                        elif "password2" in data:
+                            response_format['message'] = data["password2"]
+                        elif "nickname" in data:
+                            response_format['message'] = data["nickname"]
                         else:
                             response_format['message'] = data
+                    # success
                     else:
                         response_format['data'] = data
                         response_format['message'] = "success"
