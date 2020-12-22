@@ -26,6 +26,7 @@ urlpatterns = [
     path('rank_update/',views.rank_update),
     path('level_update/',views.level_update),
     path('device/apns/', include(push_router.urls)),
+    path('test/',views.test),
     path('', include(User_router.urls)),
 ]
 

@@ -6,7 +6,7 @@ from .serializers import UserSerializer, FeedSerializer, QuestListSerializer, Qu
 from .models import CustomUser,Feed,QuestList
 from rest_framework.response import Response
 import datetime
-
+from dateutil.relativedelta import relativedelta
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -332,3 +332,24 @@ def see_others_feed(request,self):
         return self.get_paginated_response(serializer.data)
     serializer = self.get_serializer(queryset, many=True)
     return Response(serializer.data)
+
+
+def test(request):
+    week = ['월','화','수','목','금','토','일']
+    startday = datetime.datetime.now() - relativedelta(weekday=1)
+    endday = datetime.datetime.now()
+    all_users = list(CustomUser.objects.all().values_list('id',flat=True))
+    feeds = Feed.objects.filter(date__range=[startday,endday]).values_list('uid',flat=True).distinct()
+    for i in feeds:
+        user = CustomUser.objects.get(id = int(i))
+        best = Feed.objects.filter(uid = int(i)).order_by('-time')[0]
+        all_users.remove(i)
+        user.weekly_stats = week[best.date.weekday()]
+        print(user.weekly_stats)
+        user.save()
+    for j in all_users:
+        user = CustomUser.objects.get(id = int(j))
+        user.weekly_stats = '-'
+        print(user.weekly_stats)
+        user.save()
+    return Response(status=status.HTTP_200_OK)
