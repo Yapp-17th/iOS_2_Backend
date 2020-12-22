@@ -19,7 +19,6 @@ urlpatterns = [
     path('password/reset/confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
     # path('resetPassword/<uidb64>/<token>/', views.resetPassword, name="password_reset_front"),
     path('registration/', include('rest_auth.registration.urls')),
-
     path('quest_to_user/', views.quest_to_user),
     path('feed/', include(Feed_router.urls)),
     path('questlist/', include(Questlist_router.urls)),
