@@ -333,20 +333,3 @@ def see_others_feed(request,self):
     serializer = self.get_serializer(queryset, many=True)
     return Response(serializer.data)
 
-
-def test(request):
-    users = CustomUser.objects.all()
-    startday = datetime.datetime.now() - relativedelta(months=1)
-    endday = datetime.datetime.now()
-    for user in users:
-        feeds = Feed.objects.filter(uid=user.id ,date__range=[startday,endday])
-        feeds_count = feeds.count()
-        month = endday.month - user.registeredDate.month
-        if month == 0:
-            user.save()
-        else:
-            avg_count = round(feeds_count/month,2)
-            user.monthly_stats = avg_count
-            print(user.monthly_stats)
-            user.save()
-    return Response(status=status.HTTP_200_OK)
