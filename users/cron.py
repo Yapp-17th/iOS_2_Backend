@@ -36,13 +36,15 @@ def monthly_stats():
 
 def weekly_stats():
     week = ['월','화','수','목','금','토','일']
-    startday = datetime.datetime.now() - relativedelta(weekday=1)
+    startday = datetime.datetime.now() - datetime.timedelta(weeks=1)
     endday = datetime.datetime.now()
+    print(startday,endday)
     all_users = list(CustomUser.objects.all().values_list('id',flat=True))
     feeds = Feed.objects.filter(date__range=[startday,endday]).values_list('uid',flat=True).distinct()
     for i in feeds:
         user = CustomUser.objects.get(id = int(i))
         best = Feed.objects.filter(date__range=[startday,endday],uid = int(i)).order_by('-time')[0]
+        print(Feed.objects.filter(date__range=[startday,endday],uid = int(i)).order_by('-time')[0])
         all_users.remove(i)
         user.weekly_stats = week[best.date.weekday()]
         user.save()
