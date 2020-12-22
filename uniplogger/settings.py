@@ -208,10 +208,10 @@ CRONJOBS = [
     # 매일 0시 0분 미접속자 판별 ( N-> D )
     ('0 0 * * *', 'users.cron.check_3days'),
     # ('0 0 * * *', 'users.cron.check_7days'),
-    ('0 0 * 1 *', 'users.cron.monthly_stats'),
-    ('0 0 * * 1', 'users.cron.weekly_stats'),
-    #('* * * * *', 'users.cron.weekly_stats','>> /Users/guinness/Uniplogger/iOS_2_Backend/users/cronlog.log'),
-    #('* * * * *', 'users.cron.monthly_stats','>> /Users/guinness/Uniplogger/iOS_2_Backend/users/cronlog.log'),
+    #('0 0 * 1 *', 'users.cron.monthly_stats'),
+    #('0 0 * * 1', 'users.cron.weekly_stats'),
+    ('* * * * *', 'users.cron.weekly_stats'),
+    ('* * * * *', 'users.cron.monthly_stats'),
 ]
 #rest-auth/logout 시 로그아웃 
 ACCOUNT_LOGOUT_ON_GET = True
