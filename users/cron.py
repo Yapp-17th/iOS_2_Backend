@@ -10,14 +10,12 @@ def check_3days():
         if user.state == "N":
             if datetime.datetime.now() >= user.lastlogined + datetime.timedelta(days=3):
                 user.state = "D"
-                #device = APNSDevice.objects.get(registration_id=apns_token)
-                #device.send_message(message = {"title" : "3일 접속X","body" : "D로 변경됨"})
                 user.save()
 
-def check_7days():
-    users = CustomUser.objects.filter(state = "D")
-    for user in users:
-        if datetime.datetime.now() >= user.lastlogined + datetime.timedelta(days=7): 
+#def check_7days():
+    #users = CustomUser.objects.filter(state = "D")
+    #for user in users:
+    #    if datetime.datetime.now() >= user.lastlogined + datetime.timedelta(days=7): 
         #device = APNSDevice.objects.get(registration_id=apns_token)
         #device.send_message(message = {"title" : "3일 접속X","body" : "들어오세요!"})
  
@@ -37,7 +35,6 @@ def monthly_stats():
             user.save()
 
 def weekly_stats():
-    print('week')
     week = ['월','화','수','목','금','토','일']
     startday = datetime.datetime.now() - relativedelta(weekday=1)
     endday = datetime.datetime.now()
