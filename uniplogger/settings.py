@@ -210,8 +210,8 @@ CRONJOBS = [
     # ('0 0 * * *', 'users.cron.check_7days'),
     #('0 0 * 1 *', 'users.cron.monthly_stats'),
     #('0 0 * * 1', 'users.cron.weekly_stats'),
-    ('* * * * *', 'users.cron.weekly_stats'),
-    ('* * * * *', 'users.cron.monthly_stats'),
+    ('* * * * *', 'users.cron.weekly_stats','>> /Users/guinness/Uniplogger/iOS_2_Backend/users/cronlog.log'),
+    ('* * * * *', 'users.cron.monthly_stats',),
 ]
 #rest-auth/logout 시 로그아웃 
 ACCOUNT_LOGOUT_ON_GET = True

@@ -67,7 +67,7 @@ class CustomUser(AbstractUser):
 class Feed(Model):
     uid = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     title = models.CharField(max_length=300)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(auto_now_add=False)
     distance = models.FloatField()  # "XX.XX"km단위
     time = models.IntegerField()    # "초"단위
     photo = models.ImageField()
