@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'django_crontab',
     'django_mysql',
-    "push_notifications",
+
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -216,19 +216,13 @@ CRONJOBS = [
 #rest-auth/logout 시 로그아웃 
 ACCOUNT_LOGOUT_ON_GET = True
 
-
-PUSH_NOTIFICATIONS_SETTINGS = {
-    "APNS_CERTIFICATE": secrets["APNS_CERTIFICATE"],
-    "APNS_AUTH_KEY_PATH" : secrets["APNS_AUTH_KEY_PATH"],
-    "APNS_AUTH_KEY_ID" : secrets["APNS_AUTH_KEY_ID"],
-    "APNS_TEAM_ID" : secrets["APNS_TEAM_ID" ],
-    "APNS_TOPIC": secrets["APNS_TOPIC"],
-    #"APNS_USE_ALTERNATIVE_PORT": 443 대신 포트 2197 사용
-    #"APNS_USE_SANDBOX" : api.push.apple.com 대신 api.development.push.apple.com 사용
-}
-
-UPDATE_ON_DUPLICATE_REG_ID = True
-
 REST_AUTH_REGISTER_SERIALIZERS = {
      'REGISTER_SERIALIZER': 'users.serializers.RegisterSerializer',
 }
+
+import firebase_admin
+from firebase_admin import credentials
+
+cred_path = os.path.join(BASE_DIR, "serviceAccountKey.json")
+cred = credentials.Certificate(cred_path)
+firebase_admin.initialize_app(cred)

@@ -192,3 +192,5 @@ secrets.json
 
 # media
 media
+
+serviceAccountKey.json

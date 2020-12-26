@@ -137,6 +137,7 @@ class QuestListDetailSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(RegisterSerializer):
     nickname = serializers.CharField(required=False, write_only=True)
+    registration_token = serializers.CharField(required=False, write_only=True)
     def get_cleaned_data(self):
         users = CustomUser.objects.all()
         return {
@@ -144,6 +145,7 @@ class RegisterSerializer(RegisterSerializer):
             'password2': self.validated_data.get('password2', ''),
             'email': self.validated_data.get('email', ''),
             'nickname': self.validated_data.get('nickname', ''),
+            'registration_token': self.validated_data.get('registration_token','')
         }
 
     def validate_nickname(self, nickname):
@@ -156,7 +158,7 @@ class RegisterSerializer(RegisterSerializer):
                 raise serializers.ValidationError({'msgType':'error','message':'duplicate nickname'})
         res = super(RegisterSerializer, self).save(request)
         res.nickname = self.validated_data.get('nickname', '')
-        
+        res.registration_token = self.validated_data.get('registration_token','')
         res.save()
         return res
 

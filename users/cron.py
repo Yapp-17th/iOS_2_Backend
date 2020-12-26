@@ -4,21 +4,22 @@ import datetime
 from push_notifications.models import APNSDevice
 from dateutil.relativedelta import relativedelta
 from collections import Counter
+from .push_fcm_notification import *
 
 def check_3days():
     users = CustomUser.objects.all()
     for user in users:
         if user.state == "N":
             if datetime.datetime.now() >= user.lastlogined + datetime.timedelta(days=3):
+                send_to_firebase_cloud_messaging(user.registration_token)
                 user.state = "D"
                 user.save()
 
-#def check_7days():
-    #users = CustomUser.objects.filter(state = "D")
-    #for user in users:
-    #    if datetime.datetime.now() >= user.lastlogined + datetime.timedelta(days=7): 
-        #device = APNSDevice.objects.get(registration_id=apns_token)
-        #device.send_message(message = {"title" : "3일 접속X","body" : "들어오세요!"})
+def check_7days():
+    users = CustomUser.objects.filter(state = "D")
+    for user in users:
+        if datetime.datetime.now() >= user.lastlogined + datetime.timedelta(days=7): 
+            send_to_firebase_cloud_messaging(user.registration_token)
  
 def monthly_stats():
     users = CustomUser.objects.all()
