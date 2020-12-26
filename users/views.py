@@ -335,8 +335,3 @@ def see_others_feed(request,self):
     serializer = self.get_serializer(queryset, many=True)
     return Response(serializer.data)
 
-@api_view(['GET'])
-def check_3days(request):
-    users = CustomUser.objects.all()
-    for user in users:
-        print(user.registration_token)
