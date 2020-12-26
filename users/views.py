@@ -9,7 +9,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from collections import Counter
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet): 
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     http_method_names = ['get','delete','head']
