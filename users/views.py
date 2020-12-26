@@ -337,5 +337,7 @@ def see_others_feed(request,self):
 
 @api_view(['GET'])
 def msg(request):
-    device = APNSDevice.objects.get(registration_id="b2d008a4b42f8c3fd45af98cff313529ce8f1fa10d1ce58256c3ac6267c2b8ab")
-    device.send_message("You've got mail")
+    #device = APNSDevice.objects.get(registration_id="b2d008a4b42f8c3fd45af98cff313529ce8f1fa10d1ce58256c3ac6267c2b8ab")
+    device = APNSDevice.objects.filter(user_id="5")
+    print(device.registration_id,device.user_id)
+    device.send_message("You've got mail") 
