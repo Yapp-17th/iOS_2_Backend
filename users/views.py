@@ -8,6 +8,7 @@ from rest_framework.response import Response
 import datetime
 from dateutil.relativedelta import relativedelta
 from collections import Counter
+from push_notifications.models import APNSDevice
 
 class UserViewSet(viewsets.ModelViewSet): 
     queryset = CustomUser.objects.all()
@@ -333,3 +334,8 @@ def see_others_feed(request,self):
         return self.get_paginated_response(serializer.data)
     serializer = self.get_serializer(queryset, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def msg(request,self):
+    device = APNSDevice.objects.get(registration_id=apns_token)
+    device.send_message("You've got mail")
