@@ -6,8 +6,6 @@ from .serializers import UserSerializer, FeedSerializer, QuestListSerializer, Qu
 from .models import CustomUser,Feed,QuestList
 from rest_framework.response import Response
 import datetime
-from dateutil.relativedelta import relativedelta
-from collections import Counter
 
 
 class UserViewSet(viewsets.ModelViewSet): 
@@ -20,7 +18,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 registration_token 변경
                 ---
                 (토큰 필요)
-                user가 등록된 후 닉네임을 PUT 요청을 통해
+                user가 등록된 후 PUT 요청을 통해
                 registration_token을 수정할 수 있습니다.
                 수정완료시 201 리턴과 함께 해당 유저에 대한 데이터값을 보내줍니다.
     
@@ -28,7 +26,8 @@ class UserViewSet(viewsets.ModelViewSet):
         registration_token = request.data.get('registration_token')
         
         user_info  = self.get_object()
-        serializer = self.get_serializer(user_info) 
+        serializer = self.get_serializer(user_info)
+        user_info.agree_push = False if user_info.agree_push else True
         user_info.registration_token = registration_token
         self.perform_update(user_info)
         return Response(serializer.data,status=status.HTTP_201_CREATED)

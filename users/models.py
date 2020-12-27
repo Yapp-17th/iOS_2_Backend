@@ -38,6 +38,7 @@ class CustomUser(AbstractUser):
     weekly_stats = models.CharField(max_length=10, default = '-')
     monthly_stats = models.FloatField(default=0.0)
     experience = models.FloatField(default = 0.0)
+    agree_push = models.BooleanField(default=True)
     registration_token = models.TextField(null = True)
 
     def __str__(self):
