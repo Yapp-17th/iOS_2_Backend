@@ -8,18 +8,22 @@ from .push_fcm_notification import *
 
 def check_3days():
     users = CustomUser.objects.all()
+    title = '3일간 플로깅을 진행하지 않았어요!'
+    body = '앱에 접속해서 함께 플로깅해요'
     for user in users:
         if user.state == "N":
             if datetime.datetime.now() >= user.lastlogined + datetime.timedelta(days=3):
-                send_to_3days(user.registration_token)
+                send_to_push(user.registration_token,title,body)
                 user.state = "D"
                 user.save()
 
 def check_7days():
     users = CustomUser.objects.filter(state = "D")
+    title='일주일간 플로깅을 진행하지 않았어요!'
+    body='앱에 접속해서 함께 플로깅해요'
     for user in users:
         if datetime.datetime.now() >= user.lastlogined + datetime.timedelta(days=7): 
-            send_to_7days(user.registration_token)
+            send_to_push(user.registration_token, title, body)
  
 def monthly_stats():
     users = CustomUser.objects.all()
