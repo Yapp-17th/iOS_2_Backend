@@ -17,7 +17,7 @@ class PlanetSimpleSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id','registeredDate', 'email', 'nickname', 'level', 'rank', 'state', 'planet', 'weekly_stats', 'monthly_stats']
+        fields = ['id','registeredDate', 'email', 'nickname', 'level', 'rank', 'state', 'planet', 'weekly_stats', 'monthly_stats','registration_token']
     
     def create(self, validated_data):
         user = CustomUser(
@@ -37,12 +37,19 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         rank_list = sorted(rank_list, key = lambda x : -x[0])
         user_idx = 0
         for rank in range(1,len(rank_list)+1):
-            rank_list[user_idx][0] = rank
+            if rank_list[user_idx][0] == 0:
+                rank_list[user_idx][0] = -1
+            else:
+                rank_list[user_idx][0] = rank
             user_idx+=1
+
         for i in rank_list:
             user = CustomUser.objects.get(id = i[1])
-            total = CustomUser.objects.all().count()
-            user.rank = int(i[0] / total * 100)
+            if i[0] == -1:
+                user.rank = 100
+            else:
+                total = CustomUser.objects.all().count()
+                user.rank = int((i[0] / total) * 100)
             user.save()
     
     def level_save(self,user_info):
@@ -137,6 +144,7 @@ class QuestListDetailSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(RegisterSerializer):
     nickname = serializers.CharField(required=False, write_only=True)
+    registration_token = serializers.CharField(required=False, write_only=True)
     def get_cleaned_data(self):
         users = CustomUser.objects.all()
         return {
@@ -144,6 +152,7 @@ class RegisterSerializer(RegisterSerializer):
             'password2': self.validated_data.get('password2', ''),
             'email': self.validated_data.get('email', ''),
             'nickname': self.validated_data.get('nickname', ''),
+            'registration_token': self.validated_data.get('registration_token','')
         }
 
     def validate_nickname(self, nickname):
@@ -156,7 +165,7 @@ class RegisterSerializer(RegisterSerializer):
                 raise serializers.ValidationError({'msgType':'error','message':'duplicate nickname'})
         res = super(RegisterSerializer, self).save(request)
         res.nickname = self.validated_data.get('nickname', '')
-        
+        res.registration_token = self.validated_data.get('registration_token','')
         res.save()
         return res
 

@@ -7,39 +7,35 @@ from .models import CustomUser,Feed,QuestList
 from rest_framework.response import Response
 import datetime
 from dateutil.relativedelta import relativedelta
+from collections import Counter
 
-class UserViewSet(viewsets.ModelViewSet):
+
+class UserViewSet(viewsets.ModelViewSet): 
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-    http_method_names = ['get','delete','head']
+    http_method_names = ['get','delete','head','put']
     
-    # def update(self, request, *args, **kwargs):
-    #     '''
-    #             user 가입시 닉네임 등록
-    #             ---
-    #             (토큰 필요)
-    #             user가 등록된 후 닉네임을 PUT 요청을 통해
-    #             유저정보에 추가적으로 등록합니다.
-    #             성공적으로 실행되면 201 응답을 리턴하며
-    #             닉네임이 중복값일경우 409 응답을 리턴합니다.
-    #
-    #     '''
-    #     nickname = request.data.get('nickname')
-    #     if nickname == "":
-    #         return Response(status=status.HTTP_409_CONFLICT)
-    #     users = CustomUser.objects.all()
-    #     for user in users:
-    #         if user.nickname == nickname:
-    #             return Response(status=status.HTTP_409_CONFLICT)
-    #
-    #     user_info  = self.get_object()
-    #     user_info.nickname = nickname
-    #     self.perform_update(user_info)
-    #     return Response(user_info,status=status.HTTP_201_CREATED)
+    def update(self, request, *args, **kwargs):
+        '''
+                registration_token 변경
+                ---
+                (토큰 필요)
+                user가 등록된 후 닉네임을 PUT 요청을 통해
+                registration_token을 수정할 수 있습니다.
+                수정완료시 201 리턴과 함께 해당 유저에 대한 데이터값을 보내줍니다.
+    
+        '''
+        registration_token = request.data.get('registration_token')
+        
+        user_info  = self.get_object()
+        serializer = self.get_serializer(user_info) 
+        user_info.registration_token = registration_token
+        self.perform_update(user_info)
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
         '''
-                탈퇴하기
+            
                 ---
                 (토큰 필요)
                 유저 정보가 사라지고 유저와 관련된 데이터들이 삭제됩니다.
@@ -333,23 +329,3 @@ def see_others_feed(request,self):
     serializer = self.get_serializer(queryset, many=True)
     return Response(serializer.data)
 
-
-def test(request):
-    week = ['월','화','수','목','금','토','일']
-    startday = datetime.datetime.now() - relativedelta(weekday=1)
-    endday = datetime.datetime.now()
-    all_users = list(CustomUser.objects.all().values_list('id',flat=True))
-    feeds = Feed.objects.filter(date__range=[startday,endday]).values_list('uid',flat=True).distinct()
-    for i in feeds:
-        user = CustomUser.objects.get(id = int(i))
-        best = Feed.objects.filter(uid = int(i)).order_by('-time')[0]
-        all_users.remove(i)
-        user.weekly_stats = week[best.date.weekday()]
-        print(user.weekly_stats)
-        user.save()
-    for j in all_users:
-        user = CustomUser.objects.get(id = int(j))
-        user.weekly_stats = '-'
-        print(user.weekly_stats)
-        user.save()
-    return Response(status=status.HTTP_200_OK)
