@@ -40,26 +40,26 @@ class TrashcanViewSet(viewsets.ModelViewSet):
         return Response(self.get_serializer(instance).data)
 
 
-# @api_view(['GET'])
-# def get_trashcan_csv(request):
-#     '''
-#             csv 파일의 쓰레기통 정보를 가져옴
-#             ---
-#             (토큰 필요X)
-#     '''
-#     Trashcan.objects.all().delete()
-#
-#     CSV_PATH = 'static/seoul_trashcan.csv'
-#
-#     with open(CSV_PATH, newline='') as csvfile:
-#         data_reader = csv.DictReader(csvfile)
-#
-#         for row in data_reader:
-#             Trashcan.objects.create(
-#                 address=row['road_name'],
-#                 latitude=row['lat'],
-#                 longitude=row['long'],
-#                 # longitude=round(float(row['long']), 3),   # 소수점 반올림 필요하다면?
-#                 state='C'
-#             )
-#     return Response(status=status.HTTP_200_OK)
+@api_view(['GET'])
+def get_trashcan_csv(request):
+    '''
+            csv 파일의 쓰레기통 정보를 가져옴
+            ---
+            (토큰 필요X)
+    '''
+    Trashcan.objects.all().delete()
+
+    CSV_PATH = 'static/seoul_trashcan.csv'
+
+    with open(CSV_PATH, newline='') as csvfile:
+        data_reader = csv.DictReader(csvfile)
+
+        for row in data_reader:
+            Trashcan.objects.create(
+                address=row['road_name'],
+                latitude=row['lat'],
+                longitude=row['long'],
+                # longitude=round(float(row['long']), 3),   # 소수점 반올림 필요하다면?
+                state='C'
+            )
+    return Response(status=status.HTTP_200_OK)
