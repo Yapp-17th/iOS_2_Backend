@@ -27,8 +27,10 @@ class UserViewSet(viewsets.ModelViewSet):
         
         user_info  = self.get_object()
         serializer = self.get_serializer(user_info)
-        user_info.agree_push = False if user_info.agree_push else True
-        user_info.registration_token = registration_token
+        if request.data:
+            user_info.registration_token = registration_token 
+        else:
+            user_info.agree_push = False if user_info.agree_push else True
         self.perform_update(user_info)
         return Response(serializer.data,status=status.HTTP_201_CREATED)
 
