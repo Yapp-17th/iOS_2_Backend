@@ -2,7 +2,7 @@ from math import ceil
 
 from planets.models import Planet
 from users.models import CustomUser
-from users.push_fcm_notification import send_to_challenge
+from users.push_fcm_notification import send_to_push
 
 def create_planet():
     # 모든 유저 할당 가능한 수의 행성 생성, 유저의 status 고려해야할까?
