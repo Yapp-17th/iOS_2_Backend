@@ -8,6 +8,7 @@ from django.db.models import CharField, Model
 from django_mysql.models import ListCharField
 from .managers import CustomUserManager
 from django.db.models import Sum
+import datetime
 
 
 class CustomUser(AbstractUser):
@@ -20,7 +21,7 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     registeredDate = models.DateField(auto_now_add=True)
-    lastlogined = models.DateField(auto_now=False)
+    lastlogined = models.DateField(auto_now=False,default=datetime.date.today())
     nickname = models.CharField(max_length=12)
 
 
