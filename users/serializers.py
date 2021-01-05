@@ -17,7 +17,7 @@ class PlanetSimpleSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id','registeredDate', 'email', 'nickname', 'level', 'rank', 'state', 'planet', 'weekly_stats', 'monthly_stats','agree_push', 'registration_token','lastlogined']
+        fields = ['id','registeredDate', 'email', 'nickname', 'level', 'rank', 'state', 'planet', 'weekly_stats', 'monthly_stats','agree_push', 'registration_token']
     
     def create(self, validated_data):
         user = CustomUser(
