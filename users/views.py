@@ -66,7 +66,7 @@ class UserViewSet(viewsets.ModelViewSet):
         user_info.lastlogined = datetime.datetime.now()
         user_info.state = "N"
         self.perform_update(user_info)
-        return Response(user_info,status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED)
     
 
 class FeedViewSet(viewsets.ModelViewSet):
@@ -329,4 +329,3 @@ def see_others_feed(request,self):
         return self.get_paginated_response(serializer.data)
     serializer = self.get_serializer(queryset, many=True)
     return Response(serializer.data)
-

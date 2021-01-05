@@ -20,7 +20,7 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     registeredDate = models.DateField(auto_now_add=True)
-    lastlogined = models.DateField(auto_now=True)
+    lastlogined = models.DateField(auto_now=False)
     nickname = models.CharField(max_length=12)
 
 
