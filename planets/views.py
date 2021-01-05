@@ -5,8 +5,6 @@ from planets.models import Planet
 from users.models import CustomUser as User
 from planets.serializers import PlanetSerializer
 
-import datetime
-
 
 class PlanetViewSet(viewsets.ModelViewSet):
     queryset = Planet.objects.all()
@@ -40,7 +38,7 @@ class PlanetViewSet(viewsets.ModelViewSet):
         '''
         user = User.objects.get(id=self.request.user.id)
         if user.planet:
-            return Response(status=status.HTTP_403_FORBIDDEN, data="이번주 행성에 이미 참여했음.")
+            return Response(False, status=status.HTTP_403_FORBIDDEN)
         # 속한 유저 수가 10보다 작으면서 id 가장 작은 행성(first)
         cur_planet = Planet.objects.filter(user_cnt__lt=10).first()
         if not cur_planet:
@@ -51,6 +49,6 @@ class PlanetViewSet(viewsets.ModelViewSet):
         user.planet = cur_planet
         user.save()
 
-        serializer = self.get_serializer(cur_planet)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        # serializer = self.get_serializer(cur_planet)
+        return Response(True, status=status.HTTP_200_OK)
 
